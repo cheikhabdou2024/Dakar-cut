@@ -63,11 +63,14 @@ export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps)
   }
 
   const handleBooking = () => {
+    const stylist = selectedStylist ? salon.stylists.find(s => s.id === selectedStylist) : undefined;
     // 1. Create new appointment object
     const newAppointment: Appointment = {
       id: `appt-${Date.now()}`,
       salonId: salon.id,
       salonName: salon.name,
+      stylistId: selectedStylist && selectedStylist !== 'any' ? selectedStylist : undefined,
+      stylistName: selectedStylist && selectedStylist !== 'any' ? stylist?.name : undefined,
       serviceNames: salon.services
         .filter((s) => selectedServices.includes(s.id))
         .map((s) => s.name),
@@ -197,7 +200,7 @@ export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps)
               <div className="space-y-4 py-4">
                 <div><strong>Salon:</strong> {salon.name}</div>
                 <div><strong>Services:</strong> {salon.services.filter(s => selectedServices.includes(s.id)).map(s => s.name).join(', ')}</div>
-                <div><strong>Stylist:</strong> {selectedStylist === 'any' ? 'Any Available' : salon.stylists.find(s => s.id === selectedStylist)?.name}</div>
+                <div><strong>Stylist:</strong> {selectedStylist === 'any' ? 'Any Available' : salon.stylists.find(s => s.id === selectedStylist)?.name ?? 'Any Available'}</div>
                 <div><strong>Date:</strong> {selectedDate?.toLocaleDateString()}</div>
                 <div><strong>Time:</strong> {selectedTime}</div>
                 <hr/>

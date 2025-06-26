@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { appointments as initialAppointments, type Appointment, salons as initialSalons, type Salon } from "@/lib/placeholder-data";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, Scissors, Tag, CheckCircle, XCircle, Loader2 } from "lucide-react";
+import { Calendar, Clock, Scissors, Tag, CheckCircle, XCircle, Loader2, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -171,6 +171,9 @@ export default function AppointmentsPage() {
                       <div className="flex items-center text-sm"><Calendar className="mr-2 h-4 w-4 text-muted-foreground" /> {formatDate(appt.date)}</div>
                       <div className="flex items-center text-sm"><Clock className="mr-2 h-4 w-4 text-muted-foreground" /> {appt.time}</div>
                       <div className="flex items-start text-sm"><Scissors className="mr-2 h-4 w-4 text-muted-foreground mt-1" /> <div>{appt.serviceNames.join(', ')}</div></div>
+                      {appt.stylistName && (
+                        <div className="flex items-center text-sm"><User className="mr-2 h-4 w-4 text-muted-foreground" /> {appt.stylistName}</div>
+                      )}
                       <div className="flex items-center text-sm"><Tag className="mr-2 h-4 w-4 text-muted-foreground" /> {appt.cost} FCFA</div>
                     </CardContent>
                     <CardFooter className="flex gap-2">
@@ -200,6 +203,9 @@ export default function AppointmentsPage() {
                       <div className="flex items-center text-sm"><Calendar className="mr-2 h-4 w-4 text-muted-foreground" /> {formatDate(appt.date)}</div>
                       <div className="flex items-center text-sm"><Clock className="mr-2 h-4 w-4 text-muted-foreground" /> {appt.time}</div>
                       <div className="flex items-start text-sm"><Scissors className="mr-2 h-4 w-4 text-muted-foreground mt-1" /> <div>{appt.serviceNames.join(', ')}</div></div>
+                       {appt.stylistName && (
+                        <div className="flex items-center text-sm"><User className="mr-2 h-4 w-4 text-muted-foreground" /> {appt.stylistName}</div>
+                      )}
                     </CardContent>
                     <CardFooter>
                       {appt.status === 'Completed' && <Button onClick={() => handleLeaveReviewClick(appt)}>Leave a Review</Button>}

@@ -136,6 +136,8 @@ export type Appointment = {
     id: string;
     salonId: string;
     salonName: string;
+    stylistId?: string;
+    stylistName?: string;
     serviceNames: string[];
     date: string;
     time: string;
@@ -145,7 +147,7 @@ export type Appointment = {
 }
 
 export const appointments: Appointment[] = [
-    { id: 'appt1', salonId: '1', salonName: 'Elegance Coiffure', serviceNames: ["Women's Cut & Style"], date: '2024-08-15', time: '14:00', status: 'Upcoming', cost: 15000, duration: 90 },
-    { id: 'appt2', salonId: '2', salonName: 'Dakar Style Masters', serviceNames: ['Braiding'], date: '2024-07-20', time: '10:00', status: 'Completed', cost: 20000, duration: 240 },
+    { id: 'appt1', salonId: '1', salonName: 'Elegance Coiffure', stylistId: 'st1', stylistName: 'Aminata', serviceNames: ["Women's Cut & Style"], date: '2024-08-15', time: '14:00', status: 'Upcoming', cost: 15000, duration: 90 },
+    { id: 'appt2', salonId: '2', salonName: 'Dakar Style Masters', stylistId: 'st3', stylistName: 'Khadija', serviceNames: ['Braiding'], date: '2024-07-20', time: '10:00', status: 'Completed', cost: 20000, duration: 240 },
     { id: 'appt3', salonId: '4', salonName: 'Femme Chic', serviceNames: ['Relaxer'], date: '2024-07-18', time: '11:30', status: 'Cancelled', cost: 12000, duration: 120 },
 ]
