@@ -41,11 +41,11 @@ export const salons: Salon[] = [
     name: "Élégance Coiffure",
     location: "Almadies, Dakar",
     status: "Ouvert",
-    imageUrl: "https://placehold.co/600x400.png",
+    imageUrl: "https://images.unsplash.com/photo-1599351431202-192a833e2b17?q=80&w=2070&auto=format&fit=crop",
     gallery: [
-      "https://placehold.co/800x600.png",
-      "https://placehold.co/800x600.png",
-      "https://placehold.co/800x600.png",
+      "https://images.unsplash.com/photo-1599351431202-192a833e2b17?q=80&w=2070&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1622288432454-24154940562f?q=80&w=1935&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1632345031435-8727f6897f53?q=80&w=2070&auto=format&fit=crop",
     ],
     reviews: [
       { id: "r1", author: "Fatou Diop", rating: 5, comment: "Service incroyable ! Mes cheveux n'ont jamais été aussi beaux." },
@@ -55,6 +55,8 @@ export const salons: Salon[] = [
       { id: "s1", name: "Coupe Homme", category: "Coupes", price: 5000, duration: 30 },
       { id: "s2", name: "Coupe & Coiffage Femme", category: "Coupes", price: 15000, duration: 90 },
       { id: "s3", name: "Tresses", category: "Tresses", price: 20000, duration: 240 },
+      { id: "s5", name: "Coloration Tête Complète", category: "Coloration", price: 25000, duration: 180 },
+      { id: "s4", name: "Soin Revitalisant Profond", category: "Soins", price: 10000, duration: 60 },
     ],
     stylists: [
       { id: "st1", name: "Aminata", specialty: "Coloration", imageUrl: "https://placehold.co/100x100.png", bio: "Coloriste passionnée avec 10 ans d'expérience, spécialisée en balayage et transformations de couleurs vibrantes.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
@@ -78,6 +80,7 @@ export const salons: Salon[] = [
     services: [
         { id: "s4", name: "Soin Revitalisant Profond", category: "Soins", price: 10000, duration: 60 },
         { id: "s5", name: "Coloration Tête Complète", category: "Coloration", price: 25000, duration: 180 },
+        { id: "s3", name: "Tresses", category: "Tresses", price: 22000, duration: 260 },
     ],
     stylists: [
         { id: "st3", name: "Khadija", specialty: "Tresses", imageUrl: "https://placehold.co/100x100.png", bio: "Maîtresse tresseuse au toucher doux. Des nattes collées complexes aux chignons élégants, je donne vie à votre vision.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
@@ -146,8 +149,29 @@ export type Appointment = {
     duration: number; // in minutes
 }
 
+
+// NOTE: The dates are hardcoded relative to a hypothetical 'today' of 2024-08-20.
+// The dashboard logic will correctly interpret these dates against the *actual* today.
 export const appointments: Appointment[] = [
-    { id: 'appt1', salonId: '1', salonName: 'Élégance Coiffure', stylistId: 'st1', stylistName: 'Aminata', serviceNames: ["Coupe & Coiffage Femme"], date: '2024-08-15', time: '14:00', status: 'À venir', cost: 15000, duration: 90 },
-    { id: 'appt2', salonId: '2', salonName: 'Maîtres du Style de Dakar', stylistId: 'st3', stylistName: 'Khadija', serviceNames: ['Tresses'], date: '2024-07-20', time: '10:00', status: 'Terminé', cost: 20000, duration: 240 },
-    { id: 'appt3', salonId: '4', salonName: 'Femme Chic', serviceNames: ['Défrisage'], date: '2024-07-18', time: '11:30', status: 'Annulé', cost: 12000, duration: 120 },
-]
+    // Today
+    { "id": "appt-today-1", "salonId": "1", "salonName": "Élégance Coiffure", "stylistId": "st1", "stylistName": "Aminata", "serviceNames": ["Coupe & Coiffage Femme"], "date": "2024-08-20", "time": "10:00", "status": "Terminé", "cost": 15000, "duration": 90 },
+    { "id": "appt-today-2", "salonId": "2", "salonName": "Maîtres du Style de Dakar", "serviceNames": ["Soin Revitalisant Profond"], "date": "2024-08-20", "time": "11:00", "status": "Terminé", "cost": 10000, "duration": 60 },
+    { "id": "appt-today-3", "salonId": "1", "salonName": "Élégance Coiffure", "stylistId": "st2", "stylistName": "Ousmane", "serviceNames": ["Coupe Homme"], "date": "2024-08-20", "time": "14:30", "status": "À venir", "cost": 5000, "duration": 30 },
+    // Yesterday
+    { "id": "appt-yest-1", "salonId": "4", "salonName": "Femme Chic", "stylistId": "st6", "stylistName": "Fatima", "serviceNames": ["Défrisage"], "date": "2024-08-19", "time": "09:00", "status": "Terminé", "cost": 12000, "duration": 120 },
+    { "id": "appt-yest-2", "salonId": "1", "salonName": "Élégance Coiffure", "serviceNames": ["Coupe Homme"], "date": "2024-08-19", "time": "15:00", "status": "Terminé", "cost": 5000, "duration": 30 },
+    { "id": "appt-yest-3", "salonId": "2", "salonName": "Maîtres du Style de Dakar", "serviceNames": ["Coloration Tête Complète"], "date": "2024-08-19", "time": "14:00", "status": "Annulé", "cost": 25000, "duration": 180 },
+    // This week (past)
+    { "id": "appt-thisweek-1", "salonId": "1", "salonName": "Élégance Coiffure", "serviceNames": ["Tresses"], "date": "2024-08-18", "time": "10:00", "status": "Terminé", "cost": 20000, "duration": 240 },
+    // This week (future)
+    { "id": "appt-thisweek-2", "salonId": "3", "salonName": "Le Prestige Barbier", "stylistId": "st5", "stylistName": "Moussa", "serviceNames": ["Taille de Barbe", "Coupe Homme"], "date": "2024-08-21", "time": "16:00", "status": "À venir", "cost": 9000, "duration": 65 },
+    { "id": "appt-thisweek-3", "salonId": "2", "salonName": "Maîtres du Style de Dakar", "stylistId": "st3", "stylistName": "Khadija", "serviceNames": ["Tresses"], "date": "2024-08-22", "time": "09:30", "status": "À venir", "cost": 20000, "duration": 240 },
+     // Last week
+    { "id": "appt-lastweek-1", "salonId": "1", "salonName": "Élégance Coiffure", "stylistId": "st1", "stylistName": "Aminata", "serviceNames": ["Coloration Tête Complète"], "date": "2024-08-13", "time": "14:00", "status": "Terminé", "cost": 25000, "duration": 180 },
+    { "id": "appt-lastweek-2", "salonId": "4", "salonName": "Femme Chic", "serviceNames": ["Coupe & Coiffage Femme"], "date": "2024-08-12", "time": "11:30", "status": "Terminé", "cost": 18000, "duration": 90 },
+    { "id": "appt-lastweek-3", "salonId": "2", "salonName": "Maîtres du Style de Dakar", "serviceNames": ["Soin Revitalisant Profond", "Coupe & Coiffage Femme"], "date": "2024-08-14", "time": "15:30", "status": "Terminé", "cost": 25000, "duration": 150 },
+    { "id": "appt-lastweek-4", "salonId": "1", "salonName": "Élégance Coiffure", "serviceNames": ["Coupe Homme"], "date": "2024-08-15", "time": "09:00", "status": "Terminé", "cost": 5000, "duration": 30 },
+    // Other past appointments
+    { "id": 'appt2', salonId: '2', salonName: 'Maîtres du Style de Dakar', stylistId: 'st3', stylistName: 'Khadija', serviceNames: ['Tresses'], date: '2024-07-20', time: '10:00', status: 'Terminé', cost: 20000, duration: 240 },
+    { "id": 'appt3', salonId: '4', salonName: 'Femme Chic', serviceNames: ['Défrisage'], date: '2024-07-18', time: '11:30', "status": "Annulé", "cost": 12000, duration: 120 },
+];
