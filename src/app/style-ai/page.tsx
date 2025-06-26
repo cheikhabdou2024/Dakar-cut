@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, ChangeEvent, useEffect } from "react";
@@ -8,16 +9,16 @@ import { Label } from "@/components/ui/label";
 import { Wand2, Upload, Images, Loader2, Scissors } from "lucide-react";
 import Image from "next/image";
 import { useToast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
 import { getStyleSuggestion } from "@/ai/flows/style-suggestion-flow";
 import { getHairstyleExamples, type HairstyleExample } from "@/ai/flows/hairstyle-examples-flow";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function StyleAiPage() {
   const { toast } = useToast();
 
   const [originalImage, setOriginalImage] = useState<string | null>(null);
-  const [selectedStyle, setSelectedStyle] = useState<string | null>(null);
+  const [hairstylePrompt, setHairstylePrompt] = useState<string>("");
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   
@@ -61,8 +62,8 @@ export default function StyleAiPage() {
       toast({ variant: "destructive", title: "Please upload a photo first." });
       return;
     }
-    if (!selectedStyle) {
-      toast({ variant: "destructive", title: "Please select a hairstyle." });
+    if (!hairstylePrompt) {
+      toast({ variant: "destructive", title: "Please describe a hairstyle." });
       return;
     }
 
@@ -72,7 +73,7 @@ export default function StyleAiPage() {
     try {
       const result = await getStyleSuggestion({
         userImage: originalImage,
-        hairstyle: selectedStyle,
+        hairstyle: hairstylePrompt,
       });
       setGeneratedImage(result.generatedImage);
     } catch (error) {
@@ -111,33 +112,41 @@ export default function StyleAiPage() {
               <p className="text-xs text-muted-foreground">For best results, use a clear, front-facing photo.</p>
             </div>
 
-            <div className="font-headline text-lg mt-6 flex items-center gap-2"><Scissors className="h-5 w-5"/> 2. Choose a Hairstyle</div>
-            <div className="grid grid-cols-3 gap-4">
-              {areExamplesLoading ? (
-                  Array.from({ length: 6 }).map((_, index) => (
-                    <div key={index} className="aspect-square">
-                        <Skeleton className="w-full h-full rounded-lg" />
+            <div className="font-headline text-lg mt-6 flex items-center gap-2"><Scissors className="h-5 w-5"/> 2. Describe a Hairstyle</div>
+            
+            <Textarea
+              placeholder="e.g. 'A stylish mohawk with vibrant blue tips...'"
+              className="min-h-[100px]"
+              value={hairstylePrompt}
+              onChange={(e) => setHairstylePrompt(e.target.value)}
+            />
+
+            <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Or start with an example:</p>
+                <div className="grid grid-cols-3 gap-4">
+                {areExamplesLoading ? (
+                    Array.from({ length: 6 }).map((_, index) => (
+                        <div key={index} className="aspect-square">
+                            <Skeleton className="w-full h-full rounded-lg" />
+                        </div>
+                    ))
+                ) : (
+                    hairstyleExamples.map((style) => (
+                    <div key={style.name} 
+                        className="relative aspect-square cursor-pointer group rounded-lg overflow-hidden border-2 border-transparent hover:border-primary/50 transition-all"
+                        onClick={() => setHairstylePrompt(style.name)}
+                        >
+                        <Image src={style.image} alt={style.name} layout="fill" objectFit="cover" />
+                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <span className="text-white text-center text-sm font-bold p-1">{style.name}</span>
+                        </div>
                     </div>
-                  ))
-              ) : (
-                hairstyleExamples.map((style) => (
-                  <div key={style.name} 
-                    className={cn(
-                      "relative aspect-square cursor-pointer group rounded-lg overflow-hidden border-2 transition-all",
-                      selectedStyle === style.name ? "border-primary ring-2 ring-primary/50" : "border-transparent"
-                    )}
-                    onClick={() => setSelectedStyle(style.name)}
-                    >
-                      <Image src={style.image} alt={style.name} layout="fill" objectFit="cover" />
-                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                          <span className="text-white text-center text-sm font-bold p-1">{style.name}</span>
-                      </div>
-                  </div>
-                ))
-              )}
+                    ))
+                )}
+                </div>
             </div>
 
-            <Button className="w-full mt-6" size="lg" onClick={handleGenerate} disabled={isLoading || !originalImage || !selectedStyle || areExamplesLoading}>
+            <Button className="w-full mt-6" size="lg" onClick={handleGenerate} disabled={isLoading || !originalImage || !hairstylePrompt || areExamplesLoading}>
               {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Wand2 className="mr-2" />}
               {isLoading ? "Generating..." : "Generate New Look"}
             </Button>
@@ -186,3 +195,5 @@ export default function StyleAiPage() {
     </div>
   );
 }
+
+    
