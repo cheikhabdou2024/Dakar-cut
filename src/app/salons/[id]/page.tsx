@@ -1,7 +1,9 @@
+
 "use client";
 
 import { useState } from 'react';
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { salons } from "@/lib/placeholder-data";
 import { Button } from "@/components/ui/button";
@@ -92,14 +94,16 @@ export default function SalonPage({ params }: { params: { id: string } }) {
             <TabsContent value="stylists" className="mt-4">
                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {salon.stylists.map(stylist => (
-                        <Card key={stylist.id} className="text-center p-4">
-                            <Avatar className="h-20 w-20 mx-auto mb-2">
-                                <AvatarImage src={stylist.imageUrl} alt={stylist.name} data-ai-hint="professional headshot"/>
-                                <AvatarFallback>{stylist.name.charAt(0)}</AvatarFallback>
-                            </Avatar>
-                            <p className="font-semibold">{stylist.name}</p>
-                            <p className="text-xs text-muted-foreground">{stylist.specialty}</p>
-                        </Card>
+                       <Link key={stylist.id} href={`/stylists/${stylist.id}`} className="group">
+                            <Card className="text-center p-4 h-full transition-shadow duration-300 group-hover:shadow-xl">
+                                <Avatar className="h-20 w-20 mx-auto mb-2 transition-transform duration-300 group-hover:scale-110">
+                                    <AvatarImage src={stylist.imageUrl} alt={stylist.name} data-ai-hint="professional headshot"/>
+                                    <AvatarFallback>{stylist.name.charAt(0)}</AvatarFallback>
+                                </Avatar>
+                                <p className="font-semibold">{stylist.name}</p>
+                                <p className="text-xs text-muted-foreground">{stylist.specialty}</p>
+                            </Card>
+                        </Link>
                     ))}
                </div>
             </TabsContent>

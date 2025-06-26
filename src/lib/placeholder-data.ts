@@ -1,3 +1,4 @@
+
 export type Review = {
   id: string;
   author: string;
@@ -18,6 +19,8 @@ export type Stylist = {
   name: string;
   specialty: string;
   imageUrl: string;
+  bio: string;
+  portfolio: string[];
 };
 
 export type Salon = {
@@ -54,8 +57,8 @@ export const salons: Salon[] = [
       { id: "s3", name: "Braiding", category: "Tresses", price: 20000, duration: 240 },
     ],
     stylists: [
-      { id: "st1", name: "Aminata", specialty: "Coloring", imageUrl: "https://placehold.co/100x100.png" },
-      { id: "st2", name: "Ousmane", specialty: "Men's Cuts", imageUrl: "https://placehold.co/100x100.png" },
+      { id: "st1", name: "Aminata", specialty: "Coloring", imageUrl: "https://placehold.co/100x100.png", bio: "A passionate colorist with 10 years of experience, specializing in balayage and vibrant color transformations.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
+      { id: "st2", name: "Ousmane", specialty: "Men's Cuts", imageUrl: "https://placehold.co/100x100.png", bio: "Expert in modern and classic men's grooming. Precision cuts and sharp fades are my signature.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
     ],
   },
   {
@@ -77,8 +80,8 @@ export const salons: Salon[] = [
         { id: "s5", name: "Full Head Color", category: "Coloration", price: 25000, duration: 180 },
     ],
     stylists: [
-        { id: "st3", name: "Khadija", specialty: "Braiding", imageUrl: "https://placehold.co/100x100.png" },
-        { id: "st4", name: "Ibrahim", specialty: "Styling", imageUrl: "https://placehold.co/100x100.png" },
+        { id: "st3", name: "Khadija", specialty: "Braiding", imageUrl: "https://placehold.co/100x100.png", bio: "Master braider with a gentle touch. From intricate cornrows to elegant updos, I bring your vision to life.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
+        { id: "st4", name: "Ibrahim", specialty: "Styling", imageUrl: "https://placehold.co/100x100.png", bio: "Creative stylist who loves to craft unique and trendy looks for any occasion.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
     ],
   },
   {
@@ -100,7 +103,7 @@ export const salons: Salon[] = [
         { id: "s6", name: "Beard Trim", category: "Coupes", price: 3000, duration: 20 },
     ],
     stylists: [
-        { id: "st5", name: "Moussa", specialty: "Barbering", imageUrl: "https://placehold.co/100x100.png" },
+        { id: "st5", name: "Moussa", specialty: "Barbering", imageUrl: "https://placehold.co/100x100.png", bio: "Dedicated barber focused on clean lines and a perfect finish. Your beard is in good hands.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
     ],
   },
   {
@@ -123,8 +126,8 @@ export const salons: Salon[] = [
       { id: "s7", name: "Relaxer", category: "Défrisage", price: 12000, duration: 120 },
     ],
     stylists: [
-        { id: "st6", name: "Fatima", specialty: "Styling", imageUrl: "https://placehold.co/100x100.png" },
-        { id: "st7", name: "Ndeye", specialty: "Chemical Treatments", imageUrl: "https://placehold.co/100x100.png" },
+        { id: "st6", name: "Fatima", specialty: "Styling", imageUrl: "https://placehold.co/100x100.png", bio: "I believe in healthy hair first. Let's create a style that's not only beautiful but also sustainable.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
+        { id: "st7", name: "Ndeye", specialty: "Chemical Treatments", imageUrl: "https://placehold.co/100x100.png", bio: "Specializing in relaxers, perms, and treatments to manage and beautify all hair types.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
     ],
   },
 ];
