@@ -18,8 +18,8 @@ import { BookingDialog } from '@/components/booking-dialog';
 const SALONS_STORAGE_KEY = 'dakar-hair-connect-salons';
 
 export default function SalonPage() {
-  const params = useParams<{ id: string }>();
-  const id = params.id;
+  const params = useParams();
+  const id = Array.isArray(params.id) ? params.id[0] : params.id;
 
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [salon, setSalon] = useState<Salon | null | undefined>(undefined);

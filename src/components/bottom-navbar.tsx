@@ -7,7 +7,7 @@ import { Home, Calendar, Wand2, Sparkles, LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/", label: "Salons", icon: Home },
+  { href: "/home", label: "Salons", icon: Home },
   { href: "/appointments", label: "Réservations", icon: Calendar },
   { href: "/style-ai", label: "IA Coiffure", icon: Wand2 },
   { href: "/inspiration", label: "Inspiration", icon: Sparkles },
@@ -16,6 +16,11 @@ const navItems = [
 
 export function BottomNavBar() {
   const pathname = usePathname();
+
+  // Do not render the navbar on the root or onboarding pages
+  if (pathname === '/' || pathname === '/onboarding') {
+    return null;
+  }
 
   return (
     <nav className="fixed bottom-0 w-full border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:hidden z-50">

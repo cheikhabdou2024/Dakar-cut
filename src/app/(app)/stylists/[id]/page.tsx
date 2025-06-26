@@ -12,8 +12,8 @@ import { Award, Scissors, ArrowLeft, Loader2 } from "lucide-react";
 import { BookingDialog } from '@/components/booking-dialog';
 
 export default function StylistPage() {
-  const params = useParams<{ id: string }>();
-  const id = params.id;
+  const params = useParams();
+  const id = Array.isArray(params.id) ? params.id[0] : params.id;
 
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const router = useRouter();
