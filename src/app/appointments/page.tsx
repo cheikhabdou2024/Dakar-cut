@@ -1,12 +1,12 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { appointments as initialAppointments, type Appointment } from "@/lib/placeholder-data";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, Scissors, Tag, CheckCircle, XCircle } from "lucide-react";
+import { Calendar, Clock, Scissors, Tag, CheckCircle, XCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -20,11 +20,30 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 
+const APPOINTMENTS_STORAGE_KEY = 'dakar-hair-connect-appointments';
+
 export default function AppointmentsPage() {
-  const [appointments, setAppointments] = useState<Appointment[]>(initialAppointments);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
   const [selectedAppointmentId, setSelectedAppointmentId] = useState<string | null>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    try {
+      const storedAppointments = localStorage.getItem(APPOINTMENTS_STORAGE_KEY);
+      if (storedAppointments) {
+        setAppointments(JSON.parse(storedAppointments));
+      } else {
+        setAppointments(initialAppointments);
+        localStorage.setItem(APPOINTMENTS_STORAGE_KEY, JSON.stringify(initialAppointments));
+      }
+    } catch (error) {
+      console.error("Failed to process appointments from localStorage", error);
+      setAppointments(initialAppointments);
+    }
+    setIsLoading(false);
+  }, []);
 
   const upcomingAppointments = appointments.filter(a => a.status === 'Upcoming');
   const pastAppointments = appointments.filter(a => a.status !== 'Upcoming');
@@ -37,11 +56,12 @@ export default function AppointmentsPage() {
   const handleConfirmCancel = () => {
     if (!selectedAppointmentId) return;
 
-    setAppointments(prev =>
-      prev.map(appt =>
-        appt.id === selectedAppointmentId ? { ...appt, status: 'Cancelled' } : appt
-      )
+    const updatedAppointments = appointments.map(appt =>
+      appt.id === selectedAppointmentId ? { ...appt, status: 'Cancelled' as const } : appt
     );
+
+    setAppointments(updatedAppointments);
+    localStorage.setItem(APPOINTMENTS_STORAGE_KEY, JSON.stringify(updatedAppointments));
 
     toast({
       title: "Appointment Cancelled",
@@ -62,6 +82,18 @@ export default function AppointmentsPage() {
         return <Calendar className="h-4 w-4 text-blue-500" />;
     }
   };
+  
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8 flex justify-center items-center min-h-[60vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -89,13 +121,13 @@ export default function AppointmentsPage() {
                       </Badge>
                     </CardHeader>
                     <CardContent className="flex-grow space-y-3">
-                      <div className="flex items-center text-sm"><Calendar className="mr-2 h-4 w-4 text-muted-foreground" /> {new Date(appt.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
+                      <div className="flex items-center text-sm"><Calendar className="mr-2 h-4 w-4 text-muted-foreground" /> {formatDate(appt.date)}</div>
                       <div className="flex items-center text-sm"><Clock className="mr-2 h-4 w-4 text-muted-foreground" /> {appt.time}</div>
                       <div className="flex items-start text-sm"><Scissors className="mr-2 h-4 w-4 text-muted-foreground mt-1" /> <div>{appt.serviceNames.join(', ')}</div></div>
                       <div className="flex items-center text-sm"><Tag className="mr-2 h-4 w-4 text-muted-foreground" /> {appt.cost} FCFA</div>
                     </CardContent>
                     <CardFooter className="flex gap-2">
-                      <Button variant="outline">Modify</Button>
+                      <Button variant="outline" disabled>Modify</Button>
                       <Button variant="destructive" onClick={() => handleCancelClick(appt.id)}>Cancel</Button>
                     </CardFooter>
                   </Card>
@@ -118,7 +150,7 @@ export default function AppointmentsPage() {
                       </Badge>
                     </CardHeader>
                     <CardContent className="flex-grow space-y-3">
-                      <div className="flex items-center text-sm"><Calendar className="mr-2 h-4 w-4 text-muted-foreground" /> {new Date(appt.date).toLocaleDateString()}</div>
+                      <div className="flex items-center text-sm"><Calendar className="mr-2 h-4 w-4 text-muted-foreground" /> {formatDate(appt.date)}</div>
                       <div className="flex items-center text-sm"><Clock className="mr-2 h-4 w-4 text-muted-foreground" /> {appt.time}</div>
                       <div className="flex items-start text-sm"><Scissors className="mr-2 h-4 w-4 text-muted-foreground mt-1" /> <div>{appt.serviceNames.join(', ')}</div></div>
                     </CardContent>

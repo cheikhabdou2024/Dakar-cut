@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -14,15 +15,18 @@ import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import type { Salon } from "@/lib/placeholder-data";
+import type { Salon, Appointment } from "@/lib/placeholder-data";
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle, Clock, Scissors, User, Calendar as CalendarIcon, ArrowRight, ArrowLeft } from "lucide-react";
+import { appointments as initialAppointments } from "@/lib/placeholder-data";
 
 interface BookingDialogProps {
   salon: Salon;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
+
+const APPOINTMENTS_STORAGE_KEY = 'dakar-hair-connect-appointments';
 
 export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps) {
   const [step, setStep] = useState(1);
@@ -59,6 +63,46 @@ export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps)
   }
 
   const handleBooking = () => {
+    // 1. Create new appointment object
+    const newAppointment: Appointment = {
+      id: `appt-${Date.now()}`,
+      salonId: salon.id,
+      salonName: salon.name,
+      serviceNames: salon.services
+        .filter((s) => selectedServices.includes(s.id))
+        .map((s) => s.name),
+      date: selectedDate!.toISOString(),
+      time: selectedTime!,
+      status: 'Upcoming',
+      cost: totalCost,
+    };
+
+    // 2. Read current appointments from localStorage
+    let currentAppointments: Appointment[] = [];
+    try {
+      const storedAppointmentsRaw = localStorage.getItem(APPOINTMENTS_STORAGE_KEY);
+      // If storage exists, parse it. Otherwise, start with initial appointments data.
+      currentAppointments = storedAppointmentsRaw ? JSON.parse(storedAppointmentsRaw) : initialAppointments;
+    } catch (error) {
+        console.error("Failed to parse appointments from localStorage", error);
+        currentAppointments = initialAppointments;
+    }
+    
+    // 3. Add new appointment and save back to localStorage
+    const updatedAppointments = [...currentAppointments, newAppointment];
+    try {
+        localStorage.setItem(APPOINTMENTS_STORAGE_KEY, JSON.stringify(updatedAppointments));
+    } catch (error) {
+        console.error("Failed to save appointments to localStorage", error);
+        toast({
+            variant: "destructive",
+            title: "Booking Failed",
+            description: "Could not save your appointment. Please try again.",
+        });
+        return;
+    }
+
+    // 4. Show toast and close dialog
     toast({
       title: "Booking Confirmed!",
       description: `Your appointment at ${salon.name} is confirmed for ${selectedDate?.toLocaleDateString()} at ${selectedTime}.`,
