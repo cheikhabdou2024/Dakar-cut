@@ -17,7 +17,7 @@ import { BookingDialog } from '@/components/booking-dialog';
 
 const SALONS_STORAGE_KEY = 'dakar-hair-connect-salons';
 
-export default function SalonPage({ params }: { params: { id: string } }) {
+export default function SalonPage({ params: { id } }: { params: { id: string } }) {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [salon, setSalon] = useState<Salon | null | undefined>(undefined);
 
@@ -25,14 +25,14 @@ export default function SalonPage({ params }: { params: { id: string } }) {
     try {
         const storedSalons = localStorage.getItem(SALONS_STORAGE_KEY);
         const allSalons = storedSalons ? JSON.parse(storedSalons) : initialSalons;
-        const foundSalon = allSalons.find((s: Salon) => s.id === params.id);
+        const foundSalon = allSalons.find((s: Salon) => s.id === id);
         setSalon(foundSalon || null);
     } catch (error) {
         console.error("Failed to load salon data from localStorage", error);
-        const foundSalon = initialSalons.find((s) => s.id === params.id);
+        const foundSalon = initialSalons.find((s) => s.id === id);
         setSalon(foundSalon || null);
     }
-  }, [params.id]);
+  }, [id]);
 
 
   if (salon === undefined) {

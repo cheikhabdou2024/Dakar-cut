@@ -11,7 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Award, Scissors, ArrowLeft } from "lucide-react";
 import { BookingDialog } from '@/components/booking-dialog';
 
-export default function StylistPage({ params }: { params: { id: string } }) {
+export default function StylistPage({ params: { id } }: { params: { id: string } }) {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const router = useRouter();
 
@@ -20,7 +20,7 @@ export default function StylistPage({ params }: { params: { id: string } }) {
   let salon: Salon | undefined;
 
   for (const s of salons) {
-    const foundStylist = s.stylists.find((st) => st.id === params.id);
+    const foundStylist = s.stylists.find((st) => st.id === id);
     if (foundStylist) {
       stylist = foundStylist;
       salon = s;
