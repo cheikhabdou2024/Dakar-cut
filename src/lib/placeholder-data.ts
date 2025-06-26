@@ -43,7 +43,7 @@ export const salons: Salon[] = [
     status: "Ouvert",
     imageUrl: "__service_url_for_prompt_image_0__",
     gallery: [
-      "https://placehold.co/800x600.png",
+      "__service_url_for_prompt_image_0__",
       "https://placehold.co/800x600.png",
       "https://placehold.co/800x600.png",
     ],
