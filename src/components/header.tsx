@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { Scissors, Search, Calendar, User, Wand2 } from "lucide-react";
+import { Scissors, Calendar, Wand2, Sparkles } from "lucide-react";
 
 export function Header() {
   return (
@@ -15,6 +15,10 @@ export function Header() {
           <Link href="/appointments" className="transition-colors hover:text-primary">My Appointments</Link>
           <Link href="/dashboard" className="transition-colors hover:text-primary">For Stylists</Link>
           <Link href="/style-ai" className="transition-colors hover:text-primary">Style AI</Link>
+          <Link href="/inspiration" className="transition-colors hover:text-primary flex items-center gap-1">
+              <Sparkles className="h-4 w-4" />
+              Inspiration
+          </Link>
         </nav>
         <div className="flex flex-1 items-center justify-end space-x-4">
           <Button variant="ghost">Log In</Button>
