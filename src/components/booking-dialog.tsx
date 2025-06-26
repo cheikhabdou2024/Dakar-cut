@@ -25,14 +25,15 @@ interface BookingDialogProps {
   salon: Salon;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  defaultStylistId?: string;
 }
 
 const APPOINTMENTS_STORAGE_KEY = 'dakar-hair-connect-appointments';
 
-export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps) {
+export function BookingDialog({ salon, open, onOpenChange, defaultStylistId }: BookingDialogProps) {
   const [step, setStep] = useState(1);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
-  const [selectedStylist, setSelectedStylist] = useState<string | null>(null);
+  const [selectedStylist, setSelectedStylist] = useState<string>('any');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const { toast } = useToast();
@@ -42,6 +43,15 @@ export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps)
 
   useEffect(() => {
     if (open) {
+      // Reset state when dialog opens
+      setStep(1);
+      setSelectedServices([]);
+      setSelectedStylist(defaultStylistId ?? 'any');
+      setSelectedDate(new Date());
+      setSelectedTime(null);
+      setBookedSlots([]);
+
+      // Load appointments
       try {
         const storedAppointments = localStorage.getItem(APPOINTMENTS_STORAGE_KEY);
         const loadedAppointments: Appointment[] = storedAppointments ? JSON.parse(storedAppointments) : initialAppointments;
@@ -51,7 +61,7 @@ export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps)
         setAllAppointments(initialAppointments);
       }
     }
-  }, [open]);
+  }, [open, defaultStylistId]);
 
   const totalCost = salon.services
     .filter(s => selectedServices.includes(s.id))
@@ -135,15 +145,6 @@ export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps)
   }, [selectedDate, selectedStylist, totalDuration, allAppointments, salon.id, step, selectedTime, toast]);
 
 
-  const resetState = () => {
-    setStep(1);
-    setSelectedServices([]);
-    setSelectedStylist(null);
-    setSelectedDate(new Date());
-    setSelectedTime(null);
-    setBookedSlots([]);
-  }
-
   const handleBooking = () => {
     const stylist = selectedStylist ? salon.stylists.find(s => s.id === selectedStylist) : undefined;
     const newAppointment: Appointment = {
@@ -189,16 +190,8 @@ export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps)
       description: `Votre rendez-vous à ${salon.name} est confirmé pour le ${selectedDate?.toLocaleDateString('fr-FR')} à ${selectedTime}.`,
     });
     onOpenChange(false);
-    resetState();
   };
   
-  const handleClose = (openState: boolean) => {
-    if (!openState) {
-      resetState();
-    }
-    onOpenChange(openState);
-  }
-
   const handleServiceChange = (serviceId: string) => {
     const newSelectedServices = selectedServices.includes(serviceId)
       ? selectedServices.filter((id) => id !== serviceId)
@@ -235,7 +228,7 @@ export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps)
               <DialogTitle className="font-headline text-2xl flex items-center gap-2"><User />Choisir un(e) Styliste</DialogTitle>
               <DialogDescription>Sélectionnez votre styliste préféré(e) ou choisissez n'importe quel(le) disponible.</DialogDescription>
             </DialogHeader>
-            <RadioGroup onValueChange={setSelectedStylist} value={selectedStylist ?? "any"} className="py-4">
+            <RadioGroup onValueChange={setSelectedStylist} value={selectedStylist} className="py-4">
               <div className="flex items-center space-x-2 p-2 rounded-md hover:bg-muted">
                 <RadioGroupItem value="any" id="any" />
                 <Label htmlFor="any" className="cursor-pointer">N'importe quel(le) disponible</Label>
@@ -312,7 +305,7 @@ export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps)
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px] md:sm:max-w-[700px]">
         {renderStep()}
         <DialogFooter className="flex justify-between w-full">

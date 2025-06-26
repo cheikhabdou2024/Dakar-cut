@@ -91,7 +91,7 @@ export default function StylistPage({ params }: { params: { id: string } }) {
           </div>
         </div>
       </div>
-      <BookingDialog salon={salon} open={isBookingOpen} onOpenChange={setIsBookingOpen} />
+      <BookingDialog salon={salon} open={isBookingOpen} onOpenChange={setIsBookingOpen} defaultStylistId={stylist.id} />
     </>
   );
 }
