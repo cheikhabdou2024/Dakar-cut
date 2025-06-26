@@ -1,21 +1,16 @@
 
 "use client"
 
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { DollarSign, Users, Calendar, Clock } from "lucide-react";
+import { DollarSign, Users, Calendar, Clock, Loader2 } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
+import { appointments as initialAppointments, type Appointment } from "@/lib/placeholder-data";
+import { format, eachDayOfInterval, startOfWeek, endOfWeek, isSameDay, subDays, parseISO, getDay } from 'date-fns';
 
-const chartData = [
-    { day: "Mon", revenue: 55000 },
-    { day: "Tue", revenue: 62000 },
-    { day: "Wed", revenue: 78000 },
-    { day: "Thu", revenue: 71000 },
-    { day: "Fri", revenue: 95000 },
-    { day: "Sat", revenue: 120000 },
-    { day: "Sun", revenue: 30000 },
-];
+const APPOINTMENTS_STORAGE_KEY = 'dakar-hair-connect-appointments';
 
 const chartConfig = {
   revenue: {
@@ -24,109 +19,183 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
+const getStartOfWeek = (date: Date) => {
+    return startOfWeek(date, { weekStartsOn: 1 }); // Monday
+}
 
 export default function DashboardPage() {
-  const kpis = [
-    { title: "Today's Revenue", value: "85,000 FCFA", icon: DollarSign, change: "+12%" },
-    { title: "Today's Bookings", value: "17", icon: Calendar, change: "+5" },
-    { title: "Occupancy Rate", value: "78%", icon: Users, change: "+3%" },
-    { title: "Avg. Service Time", value: "45 min", icon: Clock, change: "-2 min" },
-  ];
+    const [isLoading, setIsLoading] = useState(true);
+    const [schedule, setSchedule] = useState<Record<string, Record<string, string>>>({});
+    const [kpis, setKpis] = useState([
+        { title: "Today's Revenue", value: "0 FCFA", icon: DollarSign, change: "" },
+        { title: "Today's Bookings", value: "0", icon: Calendar, change: "" },
+        { title: "Occupancy Rate", value: "78%", icon: Users, change: "+3%" },
+        { title: "Avg. Service Time", value: "45 min", icon: Clock, change: "-2 min" },
+    ]);
+    const [chartData, setChartData] = useState<{ day: string; revenue: number }[]>([]);
 
-  const schedule = {
-    "09:00": { Monday: "Awa Fall", Tuesday: "", Wednesday: "Cheikh B.", Thursday: "", Friday: "Fatou Diop", Saturday: "Full" },
-    "10:00": { Monday: "", Tuesday: "M. Gueye", Wednesday: "", Thursday: "Sophie G.", Friday: "Fatou Diop", Saturday: "Full" },
-    "11:00": { Monday: "Khadija", Tuesday: "M. Gueye", Wednesday: "Ibrahim", Thursday: "", Friday: "", Saturday: "Full" },
-    "12:00": { Monday: "", Tuesday: "", Wednesday: "Ibrahim", Thursday: "Sophie G.", Friday: "Break", Saturday: "Full" },
-    "14:00": { Monday: "Khadija", Tuesday: "Awa Fall", Wednesday: "Cheikh B.", Thursday: "Ndeye", Friday: "", Saturday: "Full" },
-    "15:00": { Monday: "", Tuesday: "", Wednesday: "", Thursday: "Ndeye", Friday: "Mariama Ba", Saturday: "Full" },
-  };
+    useEffect(() => {
+        try {
+            const storedAppointments = localStorage.getItem(APPOINTMENTS_STORAGE_KEY);
+            const loadedAppointments: Appointment[] = storedAppointments ? JSON.parse(storedAppointments) : initialAppointments;
 
-  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const today = new Date();
+            
+            // 1. Process KPIs
+            const todaysAppointments = loadedAppointments.filter((a) => isSameDay(parseISO(a.date), today));
+            const todaysRevenue = todaysAppointments
+                .filter((a) => a.status === 'Completed')
+                .reduce((sum, a) => sum + a.cost, 0);
 
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <header className="mb-8">
-        <h1 className="font-headline text-4xl font-bold text-primary">Stylist Dashboard</h1>
-        <p className="text-muted-foreground">Your business at a glance.</p>
-      </header>
+            setKpis(prevKpis => [
+                { ...prevKpis[0], value: `${todaysRevenue.toLocaleString()} FCFA`, change: `from ${todaysAppointments.length} bookings` },
+                { ...prevKpis[1], value: todaysAppointments.length.toString(), change: `total for today` },
+                prevKpis[2], 
+                prevKpis[3],
+            ]);
 
-      <div className="grid gap-6 mb-8 md:grid-cols-2 lg:grid-cols-4">
-        {kpis.map((kpi) => (
-          <Card key={kpi.title}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{kpi.title}</CardTitle>
-              <kpi.icon className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{kpi.value}</div>
-              <p className="text-xs text-muted-foreground">{kpi.change} from yesterday</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-      
-      <div className="grid gap-8">
-        <Card>
-            <CardHeader>
-            <CardTitle className="font-headline text-3xl text-primary">Weekly Revenue</CardTitle>
-            <CardDescription>Revenue overview for the last 7 days.</CardDescription>
-            </CardHeader>
-            <CardContent>
-            <ChartContainer config={chartConfig} className="h-[250px] w-full">
-                <BarChart data={chartData} accessibilityLayer>
-                    <CartesianGrid vertical={false} />
-                    <XAxis
-                        dataKey="day"
-                        tickLine={false}
-                        tickMargin={10}
-                        axisLine={false}
-                    />
-                        <YAxis
-                        tickLine={false}
-                        axisLine={false}
-                        tickMargin={10}
-                        tickFormatter={(value) => `${Number(value) / 1000}k`}
-                        />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    <Bar dataKey="revenue" fill="var(--color-revenue)" radius={4} />
-                </BarChart>
-            </ChartContainer>
-            </CardContent>
-        </Card>
+            // 2. Process Weekly Revenue Chart
+            const last7Days = eachDayOfInterval({ start: subDays(today, 6), end: today });
+            const weeklyChartData = last7Days.map(day => {
+                const dayRevenue = loadedAppointments
+                    .filter((a) => a.status === 'Completed' && isSameDay(parseISO(a.date), day))
+                    .reduce((sum, a) => sum + a.cost, 0);
+                return {
+                    day: format(day, 'E'),
+                    revenue: dayRevenue,
+                };
+            });
+            setChartData(weeklyChartData);
 
-        <div>
-            <h2 className="font-headline text-3xl font-semibold mb-6 text-primary">
-            This Week's Schedule
-            </h2>
-            <Card>
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead className="w-[100px]">Time</TableHead>
-                            {days.map(day => <TableHead key={day}>{day}</TableHead>)}
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {Object.entries(schedule).map(([time, bookings]) => (
-                            <TableRow key={time}>
-                                <TableCell className="font-medium">{time}</TableCell>
-                                {days.map(day => (
-                                    <TableCell key={day}>
-                                        {bookings[day as keyof typeof bookings] && (
-                                            <div className={`p-2 rounded-md text-xs text-center ${bookings[day as keyof typeof bookings] === "Full" ? 'bg-red-100 text-red-800' : bookings[day as keyof typeof bookings] === "Break" ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}`}>
-                                                {bookings[day as keyof typeof bookings]}
-                                            </div>
-                                        )}
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
+            // 3. Process This Week's Schedule
+            const weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const timeSlots = ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00"];
+            
+            const newSchedule: Record<string, Record<string, string>> = {};
+            timeSlots.forEach(time => {
+                newSchedule[time] = {};
+                weekDays.forEach(day => newSchedule[time][day] = "");
+            });
+            
+            const startOfThisWeek = getStartOfWeek(today);
+            const appointmentsThisWeek = loadedAppointments.filter(a => {
+                const apptDate = parseISO(a.date);
+                return apptDate >= startOfThisWeek && apptDate <= endOfWeek(startOfThisWeek, { weekStartsOn: 1 });
+            });
+
+            appointmentsThisWeek.forEach((appt) => {
+                const apptDate = parseISO(appt.date);
+                const dayIndex = (getDay(apptDate) + 6) % 7; 
+                const dayName = weekDays[dayIndex];
+                
+                const apptHour = parseInt(appt.time.split(':')[0]);
+                const closestSlot = timeSlots.find(slot => parseInt(slot.split(':')[0]) === apptHour);
+
+                if (dayName && closestSlot && !newSchedule[closestSlot][dayName]) {
+                    newSchedule[closestSlot][dayName] = `Booked`;
+                }
+            });
+            setSchedule(newSchedule);
+
+        } catch (error) {
+            console.error("Failed to process dashboard data from localStorage", error);
+        }
+        setIsLoading(false);
+    }, []);
+
+    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+    if (isLoading) {
+        return (
+          <div className="container mx-auto px-4 py-8 flex justify-center items-center min-h-[60vh]">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        );
+    }
+
+    return (
+        <div className="container mx-auto px-4 py-8">
+        <header className="mb-8">
+            <h1 className="font-headline text-4xl font-bold text-primary">Stylist Dashboard</h1>
+            <p className="text-muted-foreground">Your business at a glance.</p>
+        </header>
+
+        <div className="grid gap-6 mb-8 md:grid-cols-2 lg:grid-cols-4">
+            {kpis.map((kpi) => (
+            <Card key={kpi.title}>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">{kpi.title}</CardTitle>
+                <kpi.icon className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                <div className="text-2xl font-bold">{kpi.value}</div>
+                <p className="text-xs text-muted-foreground">{kpi.change}</p>
+                </CardContent>
             </Card>
+            ))}
         </div>
-      </div>
-    </div>
-  );
+        
+        <div className="grid gap-8">
+            <Card>
+                <CardHeader>
+                <CardTitle className="font-headline text-3xl text-primary">Weekly Revenue</CardTitle>
+                <CardDescription>Revenue overview for the last 7 days.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                <ChartContainer config={chartConfig} className="h-[250px] w-full">
+                    <BarChart data={chartData} accessibilityLayer>
+                        <CartesianGrid vertical={false} />
+                        <XAxis
+                            dataKey="day"
+                            tickLine={false}
+                            tickMargin={10}
+                            axisLine={false}
+                        />
+                        <YAxis
+                            tickLine={false}
+                            axisLine={false}
+                            tickMargin={10}
+                            tickFormatter={(value) => `${Number(value) / 1000}k`}
+                        />
+                        <ChartTooltip content={<ChartTooltipContent />} />
+                        <Bar dataKey="revenue" fill="var(--color-revenue)" radius={4} />
+                    </BarChart>
+                </ChartContainer>
+                </CardContent>
+            </Card>
+
+            <div>
+                <h2 className="font-headline text-3xl font-semibold mb-6 text-primary">
+                This Week's Schedule
+                </h2>
+                <Card>
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className="w-[100px]">Time</TableHead>
+                                {days.map(day => <TableHead key={day}>{day}</TableHead>)}
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {Object.entries(schedule).map(([time, bookings]) => (
+                                <TableRow key={time}>
+                                    <TableCell className="font-medium">{time}</TableCell>
+                                    {days.map(day => (
+                                        <TableCell key={day}>
+                                            {bookings[day as keyof typeof bookings] && (
+                                                <div className={`p-2 rounded-md text-xs text-center bg-primary/10 text-primary-90`}>
+                                                    {bookings[day as keyof typeof bookings]}
+                                                </div>
+                                            )}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </Card>
+            </div>
+        </div>
+        </div>
+    );
 }
