@@ -167,7 +167,14 @@ export default function DashboardPage() {
             
             appointmentsThisWeek.forEach((appt) => {
                 const apptDate = parseISO(appt.date);
-                const dayIndex = (getDay(apptDate) + 6) % 7; 
+                const dayOfWeek = getDay(apptDate); // Sunday is 0, Monday is 1...
+
+                // Skip Sundays as they are not in our schedule
+                if (dayOfWeek === 0) {
+                    return;
+                }
+                
+                const dayIndex = dayOfWeek - 1; // Adjust for weekDays array where Monday is 0
                 const dayName = weekDays[dayIndex];
                 
                 const apptHour = parseInt(appt.time.split(':')[0]);
