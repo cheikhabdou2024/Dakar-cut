@@ -27,10 +27,10 @@ export default function DashboardPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [schedule, setSchedule] = useState<Record<string, Record<string, string>>>({});
     const [kpis, setKpis] = useState([
-        { title: "Today's Revenue", value: "0 FCFA", icon: DollarSign, change: "" },
-        { title: "Today's Bookings", value: "0", icon: Calendar, change: "" },
-        { title: "Occupancy Rate", value: "78%", icon: Users, change: "+3%" },
-        { title: "Avg. Service Time", value: "45 min", icon: Clock, change: "-2 min" },
+        { title: "Today's Revenue", value: "...", icon: DollarSign, change: "Loading..." },
+        { title: "Today's Bookings", value: "...", icon: Calendar, change: "Loading..." },
+        { title: "Occupancy Rate", value: "78%", icon: Users, change: "+3% from last week" }, // Still static
+        { title: "Avg. Service Time", value: "...", icon: Clock, change: "Loading..." },
     ]);
     const [chartData, setChartData] = useState<{ day: string; revenue: number }[]>([]);
 
@@ -42,16 +42,21 @@ export default function DashboardPage() {
             const today = new Date();
             
             // 1. Process KPIs
-            const todaysAppointments = loadedAppointments.filter((a) => isSameDay(parseISO(a.date), today));
-            const todaysRevenue = todaysAppointments
-                .filter((a) => a.status === 'Completed')
-                .reduce((sum, a) => sum + a.cost, 0);
+            const todaysAppointments = loadedAppointments.filter((a) => isSameDay(parseISO(a.date), today) && a.status !== 'Cancelled');
+            const todaysCompletedAppointments = todaysAppointments.filter((a) => a.status === 'Completed');
+            const todaysRevenue = todaysCompletedAppointments.reduce((sum, a) => sum + a.cost, 0);
+
+            const allCompletedAppointments = loadedAppointments.filter(a => a.status === 'Completed');
+            const totalServiceMinutes = allCompletedAppointments.reduce((sum, a) => sum + a.duration, 0);
+            const avgServiceTime = allCompletedAppointments.length > 0 
+                ? Math.round(totalServiceMinutes / allCompletedAppointments.length) 
+                : 0;
 
             setKpis(prevKpis => [
-                { ...prevKpis[0], value: `${todaysRevenue.toLocaleString()} FCFA`, change: `from ${todaysAppointments.length} bookings` },
+                { ...prevKpis[0], value: `${todaysRevenue.toLocaleString()} FCFA`, change: `from ${todaysCompletedAppointments.length} completed bookings` },
                 { ...prevKpis[1], value: todaysAppointments.length.toString(), change: `total for today` },
-                prevKpis[2], 
-                prevKpis[3],
+                prevKpis[2], // Occupancy Rate remains static
+                { ...prevKpis[3], value: `${avgServiceTime} min`, change: `avg. over ${allCompletedAppointments.length} services` },
             ]);
 
             // 2. Process Weekly Revenue Chart

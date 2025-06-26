@@ -75,6 +75,7 @@ export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps)
       time: selectedTime!,
       status: 'Upcoming',
       cost: totalCost,
+      duration: totalDuration,
     };
 
     // 2. Read current appointments from localStorage
