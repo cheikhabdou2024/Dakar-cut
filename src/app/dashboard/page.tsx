@@ -4,12 +4,13 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { DollarSign, Users, Calendar, Clock, Loader2 } from "lucide-react";
+import { DollarSign, Users, Calendar, Clock, Loader2, TrendingUp } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { appointments as initialAppointments, type Appointment } from "@/lib/placeholder-data";
 import { format, eachDayOfInterval, startOfWeek, endOfWeek, isSameDay, subDays, parseISO, getDay, subWeeks } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { Progress } from "@/components/ui/progress";
 
 const APPOINTMENTS_STORAGE_KEY = 'dakar-hair-connect-appointments';
 
@@ -34,6 +35,7 @@ export default function DashboardPage() {
         { title: "Temps de Service Moyen", value: "...", icon: Clock, change: "Chargement..." },
     ]);
     const [chartData, setChartData] = useState<{ day: string; revenue: number }[]>([]);
+    const [popularServices, setPopularServices] = useState<{ name: string; count: number }[]>([]);
 
     useEffect(() => {
         try {
@@ -96,6 +98,19 @@ export default function DashboardPage() {
             });
             setChartData(weeklyChartData);
 
+            // --- Popular Services ---
+            const serviceCounts: Record<string, number> = {};
+            allCompletedAppointments.forEach(appt => {
+              appt.serviceNames.forEach(serviceName => {
+                serviceCounts[serviceName] = (serviceCounts[serviceName] || 0) + 1;
+              });
+            });
+            const sortedServices = Object.entries(serviceCounts)
+              .map(([name, count]) => ({ name, count }))
+              .sort((a, b) => b.count - a.count)
+              .slice(0, 5);
+            setPopularServices(sortedServices);
+
             // --- This Week's Schedule ---
             const weekDays = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
             const timeSlots = ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00"];
@@ -106,7 +121,6 @@ export default function DashboardPage() {
                 weekDays.forEach(day => newSchedule[time][day] = "");
             });
             
-            // Use `appointmentsThisWeek` which is already filtered for the correct date range and status
             appointmentsThisWeek.forEach((appt) => {
                 const apptDate = parseISO(appt.date);
                 const dayIndex = (getDay(apptDate) + 6) % 7; 
@@ -160,33 +174,58 @@ export default function DashboardPage() {
         </div>
         
         <div className="grid gap-8">
-            <Card>
-                <CardHeader>
-                <CardTitle className="font-headline text-3xl text-primary">Revenus Hebdomadaires</CardTitle>
-                <CardDescription>Aperçu des revenus des 7 derniers jours.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                <ChartContainer config={chartConfig} className="h-[250px] w-full">
-                    <BarChart data={chartData} accessibilityLayer>
-                        <CartesianGrid vertical={false} />
-                        <XAxis
-                            dataKey="day"
-                            tickLine={false}
-                            tickMargin={10}
-                            axisLine={false}
-                        />
-                        <YAxis
-                            tickLine={false}
-                            axisLine={false}
-                            tickMargin={10}
-                            tickFormatter={(value) => `${Number(value) / 1000}k`}
-                        />
-                        <ChartTooltip content={<ChartTooltipContent />} />
-                        <Bar dataKey="revenue" fill="var(--color-revenue)" radius={4} />
-                    </BarChart>
-                </ChartContainer>
-                </CardContent>
-            </Card>
+            <div className="grid gap-8 md:grid-cols-2">
+                <Card>
+                    <CardHeader>
+                    <CardTitle className="font-headline text-3xl text-primary">Revenus Hebdomadaires</CardTitle>
+                    <CardDescription>Aperçu des revenus des 7 derniers jours.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                    <ChartContainer config={chartConfig} className="h-[250px] w-full">
+                        <BarChart data={chartData} accessibilityLayer>
+                            <CartesianGrid vertical={false} />
+                            <XAxis
+                                dataKey="day"
+                                tickLine={false}
+                                tickMargin={10}
+                                axisLine={false}
+                            />
+                            <YAxis
+                                tickLine={false}
+                                axisLine={false}
+                                tickMargin={10}
+                                tickFormatter={(value) => `${Number(value) / 1000}k`}
+                            />
+                            <ChartTooltip content={<ChartTooltipContent />} />
+                            <Bar dataKey="revenue" fill="var(--color-revenue)" radius={4} />
+                        </BarChart>
+                    </ChartContainer>
+                    </CardContent>
+                </Card>
+                 <Card>
+                    <CardHeader>
+                        <CardTitle className="font-headline text-3xl text-primary flex items-center gap-2"><TrendingUp />Services Populaires</CardTitle>
+                        <CardDescription>Les services les plus réservés.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        {popularServices.length > 0 ? (
+                        <ul className="space-y-4">
+                            {popularServices.map((service) => (
+                            <li key={service.name}>
+                                <div className="flex justify-between items-center mb-1">
+                                    <p className="font-semibold text-sm">{service.name}</p>
+                                    <span className="font-bold text-sm text-primary">{service.count} fois</span>
+                                </div>
+                                <Progress value={(service.count / popularServices[0].count) * 100} className="h-2" />
+                            </li>
+                            ))}
+                        </ul>
+                        ) : (
+                        <p className="text-muted-foreground text-center py-10">Pas assez de données pour afficher les services populaires.</p>
+                        )}
+                    </CardContent>
+                </Card>
+            </div>
 
             <div>
                 <h2 className="font-headline text-3xl font-semibold mb-6 text-primary">
