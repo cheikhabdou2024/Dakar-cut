@@ -41,7 +41,7 @@ export const salons: Salon[] = [
     name: "Élégance Coiffure",
     location: "Almadies, Dakar",
     status: "Ouvert",
-    imageUrl: "https://placehold.co/600x400.png",
+    imageUrl: "__service_url_for_prompt_image_0__",
     gallery: [
       "https://placehold.co/800x600.png",
       "https://placehold.co/800x600.png",
