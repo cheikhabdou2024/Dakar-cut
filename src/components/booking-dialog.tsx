@@ -63,17 +63,18 @@ export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps)
   const timeSlots = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "14:00", "14:30", "15:00", "15:30", "16:00"];
 
   useEffect(() => {
-    if (!selectedDate || step !== 3 || totalDuration === 0) {
-        setBookedSlots([]);
-        return;
-    };
+    if (!selectedDate || totalDuration === 0) {
+      setBookedSlots([]);
+      return;
+    }
 
     const timeToMinutes = (time: string) => {
-        const [hours, minutes] = time.split(':').map(Number);
-        return hours * 60 + minutes;
+      const [hours, minutes] = time.split(':').map(Number);
+      return hours * 60 + minutes;
     };
 
-    const appointmentsOnDate = allAppointments.filter(appt =>
+    const appointmentsOnDate = allAppointments.filter(
+      (appt) =>
         new Date(appt.date).toDateString() === selectedDate.toDateString() &&
         appt.salonId === salon.id &&
         appt.status !== 'Cancelled'
@@ -81,41 +82,57 @@ export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps)
 
     let relevantAppointments = appointmentsOnDate;
     if (selectedStylist && selectedStylist !== 'any') {
-        relevantAppointments = appointmentsOnDate.filter(appt => appt.stylistId === selectedStylist);
+      relevantAppointments = appointmentsOnDate.filter(
+        (appt) => appt.stylistId === selectedStylist
+      );
     }
 
     const newAppointmentDuration = totalDuration;
     const unavailableSlots = new Set<string>();
-    const lunchStart = timeToMinutes("12:00");
-    const lunchEnd = timeToMinutes("14:00");
-    const closingTime = timeToMinutes("17:00");
+    const lunchStart = timeToMinutes('12:00');
+    const lunchEnd = timeToMinutes('14:00');
+    const closingTime = timeToMinutes('17:00');
 
-    timeSlots.forEach(slot => {
-        const newApptStart = timeToMinutes(slot);
-        const newApptEnd = newApptStart + newAppointmentDuration;
+    timeSlots.forEach((slot) => {
+      const newApptStart = timeToMinutes(slot);
+      const newApptEnd = newApptStart + newAppointmentDuration;
 
-        for (const existingAppt of relevantAppointments) {
-            const existingApptStart = timeToMinutes(existingAppt.time);
-            const existingApptEnd = existingApptStart + existingAppt.duration;
+      for (const existingAppt of relevantAppointments) {
+        const existingApptStart = timeToMinutes(existingAppt.time);
+        const existingApptEnd = existingApptStart + existingAppt.duration;
 
-            if (newApptStart < existingApptEnd && newApptEnd > existingApptStart) {
-                unavailableSlots.add(slot);
-                break;
-            }
+        if (newApptStart < existingApptEnd && newApptEnd > existingApptStart) {
+          unavailableSlots.add(slot);
+          break;
         }
-        
-        if (newApptStart < lunchEnd && newApptEnd > lunchStart) {
-             unavailableSlots.add(slot);
-        }
+      }
 
-        if (newApptEnd > closingTime) {
-             unavailableSlots.add(slot);
-        }
+      if (newApptStart < lunchEnd && newApptEnd > lunchStart) {
+        unavailableSlots.add(slot);
+      }
+
+      if (newApptEnd > closingTime) {
+        unavailableSlots.add(slot);
+      }
     });
 
-    setBookedSlots(Array.from(unavailableSlots));
-    
-  }, [selectedDate, selectedStylist, totalDuration, allAppointments, salon.id, step]);
+    const newBookedSlots = Array.from(unavailableSlots);
+    setBookedSlots(newBookedSlots);
+
+    // If the currently selected time becomes unavailable, reset it and notify the user.
+    if (selectedTime && newBookedSlots.includes(selectedTime)) {
+      setSelectedTime(null);
+      // Only show toast if the user is on the time selection step to avoid confusion.
+      if (step === 3) {
+        toast({
+            variant: "destructive",
+            title: "Time Slot No Longer Available",
+            description: "The selected time became unavailable due to other changes. Please choose another.",
+        });
+      }
+    }
+  }, [selectedDate, selectedStylist, totalDuration, allAppointments, salon.id, step, selectedTime, toast]);
+
 
   const resetState = () => {
     setStep(1);
@@ -156,7 +173,7 @@ export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps)
     const updatedAppointments = [...currentAppointments, newAppointment];
     try {
         localStorage.setItem(APPOINTMENTS_STORAGE_KEY, JSON.stringify(updatedAppointments));
-    } catch (error) {
+    } catch (error)        {
         console.error("Failed to save appointments to localStorage", error);
         toast({
             variant: "destructive",
@@ -180,6 +197,13 @@ export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps)
     }
     onOpenChange(openState);
   }
+
+  const handleServiceChange = (serviceId: string) => {
+    const newSelectedServices = selectedServices.includes(serviceId)
+      ? selectedServices.filter((id) => id !== serviceId)
+      : [...selectedServices, serviceId];
+    setSelectedServices(newSelectedServices);
+  };
 
   const renderStep = () => {
     switch (step) {
@@ -282,12 +306,8 @@ export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps)
   };
 
   const handleBackStep = () => {
-      // When going back to step 3, ensure the selected time is still valid
-      if (step === 4 && selectedTime && bookedSlots.includes(selectedTime)) {
-          setSelectedTime(null)
-      }
-      setStep(step - 1)
-  }
+      setStep(step - 1);
+  };
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -295,7 +315,7 @@ export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps)
         {renderStep()}
         <DialogFooter className="flex justify-between w-full">
             {step > 1 && <Button variant="outline" onClick={handleBackStep}><ArrowLeft className="mr-2 h-4 w-4"/> Back</Button>}
-            {step < 4 && <Button onClick={handleNextStep} disabled={(step === 1 && selectedServices.length === 0) || (step === 2 && !selectedStylist) || (step === 3 && (!selectedDate || !selectedTime))} className="ml-auto">Next <ArrowRight className="ml-2 h-4 w-4"/></Button>}
+            {step < 4 && <Button onClick={handleNextStep} disabled={(step === 1 && selectedServices.length === 0) || (step === 2 && !selectedStylist) || (step === 3 && (!selectedDate || !selectedTime || (selectedTime && bookedSlots.includes(selectedTime))))} className="ml-auto">Next <ArrowRight className="ml-2 h-4 w-4"/></Button>}
             {step === 4 && <Button onClick={handleBooking} className="bg-green-600 hover:bg-green-700">Confirm Appointment</Button>}
         </DialogFooter>
       </DialogContent>
