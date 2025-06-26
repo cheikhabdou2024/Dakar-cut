@@ -23,8 +23,8 @@ export function SalonCard({ salon }: SalonCardProps) {
           <Image
             src={salon.imageUrl}
             alt={`Photo de ${salon.name}`}
-            layout="fill"
-            objectFit="cover"
+            fill
+            className="object-cover"
             data-ai-hint="salon interior"
           />
         </div>

@@ -74,7 +74,7 @@ export default function SalonPage({ params }: { params: { id: string } }) {
               {salon.gallery.map((url, index) => (
                 <CarouselItem key={index}>
                   <div className="relative h-96">
-                    <Image src={url} alt={`Image de la galerie ${index + 1} pour ${salon.name}`} layout="fill" objectFit="cover" data-ai-hint="salon interior design" />
+                    <Image src={url} alt={`Image de la galerie ${index + 1} pour ${salon.name}`} fill className="object-cover" data-ai-hint="salon interior design" />
                   </div>
                 </CarouselItem>
               ))}

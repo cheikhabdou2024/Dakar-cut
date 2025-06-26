@@ -80,10 +80,9 @@ export default function StylistPage({ params }: { params: { id: string } }) {
                         <Image 
                             src={url} 
                             alt={`Image du portfolio ${index + 1} par ${stylist.name}`} 
-                            layout="fill" 
-                            objectFit="cover" 
+                            fill
                             data-ai-hint="hairstyle fashion"
-                            className="group-hover:scale-105 transition-transform duration-300"
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                     </div>
                 ))}

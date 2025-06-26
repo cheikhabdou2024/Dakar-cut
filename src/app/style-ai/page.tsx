@@ -136,7 +136,7 @@ export default function StyleAiPage() {
                         className="relative aspect-square cursor-pointer group rounded-lg overflow-hidden border-2 border-transparent hover:border-primary/50 transition-all"
                         onClick={() => setHairstylePrompt(style.name)}
                         >
-                        <Image src={style.image} alt={style.name} layout="fill" objectFit="cover" />
+                        <Image src={style.image} alt={style.name} fill className="object-cover" />
                         <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                             <span className="text-white text-center text-sm font-bold p-1">{style.name}</span>
                         </div>
