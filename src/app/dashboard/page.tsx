@@ -97,7 +97,7 @@ export default function DashboardPage() {
                 const closestSlot = timeSlots.find(slot => parseInt(slot.split(':')[0]) === apptHour);
 
                 if (dayName && closestSlot && !newSchedule[closestSlot][dayName]) {
-                    newSchedule[closestSlot][dayName] = `Booked`;
+                    newSchedule[closestSlot][dayName] = appt.serviceNames.join(', ');
                 }
             });
             setSchedule(newSchedule);
