@@ -5,15 +5,16 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Wand2, Image as ImageIcon, Loader2 } from "lucide-react";
+import { Wand2, Images as ImagesIcon, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useToast } from "@/hooks/use-toast";
 import { getHairstyleInspiration } from "@/ai/flows/hairstyle-inspiration-flow";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function InspirationPage() {
   const { toast } = useToast();
   const [prompt, setPrompt] = useState("");
-  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const examplePrompts = [
@@ -30,11 +31,11 @@ export default function InspirationPage() {
     }
 
     setIsLoading(true);
-    setGeneratedImage(null);
+    setGeneratedImages([]);
 
     try {
       const result = await getHairstyleInspiration({ prompt });
-      setGeneratedImage(result.generatedImage);
+      setGeneratedImages(result.generatedImages);
     } catch (error) {
       console.error("Error generating inspiration:", error);
       toast({
@@ -58,7 +59,7 @@ export default function InspirationPage() {
           <Wand2 className="h-10 w-10" /> Inspiration Coiffure IA
         </h1>
         <p className="text-muted-foreground mt-2">
-          Décrivez la coiffure de vos rêves et laissez notre IA lui donner vie.
+          Décrivez la coiffure de vos rêves et laissez notre IA générer une galerie d'idées.
         </p>
       </header>
 
@@ -96,7 +97,7 @@ export default function InspirationPage() {
               ) : (
                 <Wand2 className="mr-2" />
               )}
-              {isLoading ? "Génération en cours..." : "Générer l'inspiration"}
+              {isLoading ? "Génération en cours..." : "Générer la Galerie"}
             </Button>
           </CardContent>
         </Card>
@@ -104,31 +105,37 @@ export default function InspirationPage() {
         <Card>
           <CardHeader>
             <CardTitle className="font-headline flex items-center gap-2">
-              <ImageIcon className="h-5 w-5" /> 2. Votre Image Générée
+              <ImagesIcon className="h-5 w-5" /> 2. Votre Galerie d'Inspiration
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="aspect-square bg-muted rounded-lg flex items-center justify-center overflow-hidden">
+            <div className="grid grid-cols-2 gap-4">
               {isLoading ? (
-                <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                  <Loader2 className="h-8 w-8 animate-spin" />
-                  <p>Création de votre vision...</p>
-                </div>
-              ) : generatedImage ? (
-                <Image
-                  src={generatedImage}
-                  alt="Coiffure générée par IA"
-                  width={512}
-                  height={512}
-                  className="object-cover w-full h-full"
-                />
+                Array.from({ length: 4 }).map((_, index) => (
+                    <div key={index} className="aspect-square">
+                        <Skeleton className="w-full h-full rounded-lg" />
+                    </div>
+                ))
+              ) : generatedImages.length > 0 ? (
+                generatedImages.map((src, index) => (
+                   <div key={index} className="aspect-square bg-muted rounded-lg overflow-hidden">
+                        <Image
+                            src={src}
+                            alt={`Inspiration de coiffure générée par IA ${index + 1}`}
+                            width={256}
+                            height={256}
+                            className="object-cover w-full h-full"
+                        />
+                   </div>
+                ))
               ) : (
-                <div className="text-center text-muted-foreground p-4">
-                  L'inspiration pour votre coiffure apparaîtra ici.
+                 <div className="col-span-2 text-center text-muted-foreground p-4 h-64 flex flex-col justify-center items-center bg-muted rounded-lg">
+                    <ImagesIcon className="h-10 w-10 mb-4 text-primary/50" />
+                    <p className="font-semibold">Votre galerie d'inspiration apparaîtra ici.</p>
                 </div>
               )}
             </div>
-            {generatedImage && <p className="text-center text-sm text-muted-foreground mt-4">Enregistrez cette image et montrez-la à votre coiffeur !</p>}
+            {generatedImages.length > 0 && <p className="text-center text-sm text-muted-foreground mt-4">Enregistrez vos images préférées et montrez-les à votre coiffeur !</p>}
           </CardContent>
         </Card>
       </div>
