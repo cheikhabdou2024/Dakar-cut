@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { appointments as initialAppointments, type Appointment } from "@/lib/placeholder-data";
+import { appointments as initialAppointments, type Appointment, salons as initialSalons, type Salon } from "@/lib/placeholder-data";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, Scissors, Tag, CheckCircle, XCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -19,8 +19,10 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
+import { ReviewDialog } from "@/components/review-dialog";
 
 const APPOINTMENTS_STORAGE_KEY = 'dakar-hair-connect-appointments';
+const SALONS_STORAGE_KEY = 'dakar-hair-connect-salons';
 
 export default function AppointmentsPage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -28,6 +30,9 @@ export default function AppointmentsPage() {
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
   const [selectedAppointmentId, setSelectedAppointmentId] = useState<string | null>(null);
   const { toast } = useToast();
+
+  const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
+  const [selectedAppointmentForReview, setSelectedAppointmentForReview] = useState<Appointment | null>(null);
 
   useEffect(() => {
     try {
@@ -71,6 +76,48 @@ export default function AppointmentsPage() {
     setIsCancelDialogOpen(false);
     setSelectedAppointmentId(null);
   };
+
+  const handleLeaveReviewClick = (appointment: Appointment) => {
+    setSelectedAppointmentForReview(appointment);
+    setIsReviewDialogOpen(true);
+  };
+
+  const handleReviewSubmit = (salonId: string, rating: number, comment: string) => {
+    try {
+        const storedSalonsRaw = localStorage.getItem(SALONS_STORAGE_KEY);
+        let salons: Salon[] = storedSalonsRaw ? JSON.parse(storedSalonsRaw) : initialSalons;
+
+        const salonIndex = salons.findIndex(s => s.id === salonId);
+        
+        if (salonIndex > -1) {
+            const newReview = {
+                id: `rev-${Date.now()}`,
+                author: "Guest User", // Hardcoded as no auth
+                rating,
+                comment,
+            };
+            
+            if (!salons[salonIndex].reviews) {
+                salons[salonIndex].reviews = [];
+            }
+            salons[salonIndex].reviews.push(newReview);
+            
+            localStorage.setItem(SALONS_STORAGE_KEY, JSON.stringify(salons));
+            
+            toast({ 
+                title: "Review Submitted!", 
+                description: "Thank you for your feedback." 
+            });
+            setIsReviewDialogOpen(false);
+        } else {
+             toast({ variant: "destructive", title: "Error", description: "Could not find salon to submit review." });
+        }
+    } catch (error) {
+        console.error("Failed to submit review", error);
+        toast({ variant: "destructive", title: "Error", description: "Something went wrong while submitting your review." });
+    }
+  };
+
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -155,7 +202,7 @@ export default function AppointmentsPage() {
                       <div className="flex items-start text-sm"><Scissors className="mr-2 h-4 w-4 text-muted-foreground mt-1" /> <div>{appt.serviceNames.join(', ')}</div></div>
                     </CardContent>
                     <CardFooter>
-                      {appt.status === 'Completed' && <Button>Book Again</Button>}
+                      {appt.status === 'Completed' && <Button onClick={() => handleLeaveReviewClick(appt)}>Leave a Review</Button>}
                     </CardFooter>
                   </Card>
                 ))
@@ -183,6 +230,16 @@ export default function AppointmentsPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {selectedAppointmentForReview && (
+         <ReviewDialog
+            open={isReviewDialogOpen}
+            onOpenChange={setIsReviewDialogOpen}
+            salonId={selectedAppointmentForReview.salonId}
+            salonName={selectedAppointmentForReview.salonName}
+            onReviewSubmit={handleReviewSubmit}
+        />
+      )}
     </>
   );
 }

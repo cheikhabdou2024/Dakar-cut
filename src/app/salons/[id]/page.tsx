@@ -1,32 +1,55 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { salons } from "@/lib/placeholder-data";
+import { salons as initialSalons, type Salon } from "@/lib/placeholder-data";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Star, MapPin, Clock, Scissors } from "lucide-react";
+import { Star, MapPin, Clock, Scissors, Loader2 } from "lucide-react";
 import { BookingDialog } from '@/components/booking-dialog';
 
+const SALONS_STORAGE_KEY = 'dakar-hair-connect-salons';
 
 export default function SalonPage({ params }: { params: { id: string } }) {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
-  const salon = salons.find((s) => s.id === params.id);
+  const [salon, setSalon] = useState<Salon | null | undefined>(undefined);
+
+  useEffect(() => {
+    try {
+        const storedSalons = localStorage.getItem(SALONS_STORAGE_KEY);
+        const allSalons = storedSalons ? JSON.parse(storedSalons) : initialSalons;
+        const foundSalon = allSalons.find((s: Salon) => s.id === params.id);
+        setSalon(foundSalon || null);
+    } catch (error) {
+        console.error("Failed to load salon data from localStorage", error);
+        const foundSalon = initialSalons.find((s) => s.id === params.id);
+        setSalon(foundSalon || null);
+    }
+  }, [params.id]);
+
+
+  if (salon === undefined) {
+    return (
+      <div className="container mx-auto px-4 py-8 flex justify-center items-center min-h-[60vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   if (!salon) {
     notFound();
   }
 
-  const averageRating = (
-    salon.reviews.reduce((acc, review) => acc + review.rating, 0) / salon.reviews.length
-  ).toFixed(1);
+  const averageRating = salon.reviews && salon.reviews.length > 0 
+    ? (salon.reviews.reduce((acc, review) => acc + review.rating, 0) / salon.reviews.length).toFixed(1)
+    : "0.0";
 
   const serviceCategories = [...new Set(salon.services.map(s => s.category))];
 
@@ -109,7 +132,7 @@ export default function SalonPage({ params }: { params: { id: string } }) {
             </TabsContent>
             <TabsContent value="reviews" className="mt-4">
               <div className="space-y-4">
-                {salon.reviews.map(review => (
+                {salon.reviews.length > 0 ? salon.reviews.map(review => (
                   <Card key={review.id}>
                     <CardHeader>
                       <div className="flex justify-between items-center">
@@ -125,7 +148,9 @@ export default function SalonPage({ params }: { params: { id: string } }) {
                       <p className="text-muted-foreground italic">"{review.comment}"</p>
                     </CardContent>
                   </Card>
-                ))}
+                )) : (
+                  <p className="text-muted-foreground text-center py-4">No reviews yet. Be the first to leave one!</p>
+                )}
               </div>
             </TabsContent>
           </Tabs>

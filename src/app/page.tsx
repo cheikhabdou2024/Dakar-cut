@@ -5,16 +5,36 @@ import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SalonCard } from "@/components/salon-card";
-import { salons as allSalons, type Salon } from "@/lib/placeholder-data";
-import { Search, MapPin, Scissors, Star } from "lucide-react";
+import { salons as initialSalons, type Salon } from "@/lib/placeholder-data";
+import { Search, MapPin, Scissors, Star, Loader2 } from "lucide-react";
+
+const SALONS_STORAGE_KEY = 'dakar-hair-connect-salons';
 
 export default function Home() {
+  const [salons, setSalons] = useState<Salon[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
-  const [filteredSalons, setFilteredSalons] = useState<Salon[]>(allSalons);
+  const [filteredSalons, setFilteredSalons] = useState<Salon[]>([]);
 
   useEffect(() => {
-    let results = allSalons;
+    try {
+      const storedSalons = localStorage.getItem(SALONS_STORAGE_KEY);
+      if (storedSalons) {
+        setSalons(JSON.parse(storedSalons));
+      } else {
+        setSalons(initialSalons);
+        localStorage.setItem(SALONS_STORAGE_KEY, JSON.stringify(initialSalons));
+      }
+    } catch (error) {
+        console.error("Failed to load salons from localStorage", error);
+        setSalons(initialSalons);
+    }
+    setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
+    let results = salons;
 
     // Filter by search query
     if (searchQuery) {
@@ -36,11 +56,19 @@ export default function Home() {
     }
 
     setFilteredSalons(results);
-  }, [searchQuery, activeFilter]);
+  }, [searchQuery, activeFilter, salons]);
   
   const handleFilterClick = (filter: string) => {
     setActiveFilter(prev => prev === filter ? null : filter);
   };
+  
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8 flex justify-center items-center min-h-[60vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
