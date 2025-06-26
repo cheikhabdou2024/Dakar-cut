@@ -8,7 +8,7 @@ import { DollarSign, Users, Calendar, Clock, Loader2 } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { appointments as initialAppointments, type Appointment } from "@/lib/placeholder-data";
-import { format, eachDayOfInterval, startOfWeek, endOfWeek, isSameDay, subDays, parseISO, getDay } from 'date-fns';
+import { format, eachDayOfInterval, startOfWeek, endOfWeek, isSameDay, subDays, parseISO, getDay, subWeeks } from 'date-fns';
 
 const APPOINTMENTS_STORAGE_KEY = 'dakar-hair-connect-appointments';
 
@@ -29,7 +29,7 @@ export default function DashboardPage() {
     const [kpis, setKpis] = useState([
         { title: "Today's Revenue", value: "...", icon: DollarSign, change: "Loading..." },
         { title: "Today's Bookings", value: "...", icon: Calendar, change: "Loading..." },
-        { title: "Occupancy Rate", value: "78%", icon: Users, change: "+3% from last week" }, // Still static
+        { title: "Weekly Occupancy", value: "...", icon: Users, change: "Loading..." },
         { title: "Avg. Service Time", value: "...", icon: Clock, change: "Loading..." },
     ]);
     const [chartData, setChartData] = useState<{ day: string; revenue: number }[]>([]);
@@ -41,7 +41,7 @@ export default function DashboardPage() {
 
             const today = new Date();
             
-            // 1. Process KPIs
+            // --- KPI Calculations ---
             const todaysAppointments = loadedAppointments.filter((a) => isSameDay(parseISO(a.date), today) && a.status !== 'Cancelled');
             const todaysCompletedAppointments = todaysAppointments.filter((a) => a.status === 'Completed');
             const todaysRevenue = todaysCompletedAppointments.reduce((sum, a) => sum + a.cost, 0);
@@ -51,28 +51,51 @@ export default function DashboardPage() {
             const avgServiceTime = allCompletedAppointments.length > 0 
                 ? Math.round(totalServiceMinutes / allCompletedAppointments.length) 
                 : 0;
+            
+            // Occupancy Rate Calculation
+            const startOfThisWeek = getStartOfWeek(today);
+            const endOfThisWeek = endOfWeek(today, { weekStartsOn: 1 });
+            const startOfLastWeek = subWeeks(startOfThisWeek, 1);
+            const endOfLastWeek = subWeeks(endOfThisWeek, 1);
+            
+            const totalAvailableMinutesPerWeek = 6 * 6 * 60; // 6 days/week, 6 hours/day (9-12, 14-17)
 
-            setKpis(prevKpis => [
-                { ...prevKpis[0], value: `${todaysRevenue.toLocaleString()} FCFA`, change: `from ${todaysCompletedAppointments.length} completed bookings` },
-                { ...prevKpis[1], value: todaysAppointments.length.toString(), change: `total for today` },
-                prevKpis[2], // Occupancy Rate remains static
-                { ...prevKpis[3], value: `${avgServiceTime} min`, change: `avg. over ${allCompletedAppointments.length} services` },
+            const appointmentsThisWeek = loadedAppointments.filter(a => {
+                const apptDate = parseISO(a.date);
+                return a.status !== 'Cancelled' && apptDate >= startOfThisWeek && apptDate <= endOfThisWeek;
+            });
+            const bookedMinutesThisWeek = appointmentsThisWeek.reduce((sum, a) => sum + a.duration, 0);
+            const occupancyThisWeek = totalAvailableMinutesPerWeek > 0 ? (bookedMinutesThisWeek / totalAvailableMinutesPerWeek) * 100 : 0;
+
+            const appointmentsLastWeek = loadedAppointments.filter(a => {
+                const apptDate = parseISO(a.date);
+                return a.status !== 'Cancelled' && apptDate >= startOfLastWeek && apptDate <= endOfLastWeek;
+            });
+            const bookedMinutesLastWeek = appointmentsLastWeek.reduce((sum, a) => sum + a.duration, 0);
+            const occupancyLastWeek = totalAvailableMinutesPerWeek > 0 ? (bookedMinutesLastWeek / totalAvailableMinutesPerWeek) * 100 : 0;
+            const occupancyChange = occupancyThisWeek - occupancyLastWeek;
+            const occupancyChangeText = occupancyLastWeek === 0 && occupancyThisWeek > 0 
+                ? 'Up from 0% last week' 
+                : (occupancyChange === 0 ? "no change from last week" : `${occupancyChange > 0 ? '+' : ''}${occupancyChange.toFixed(0)}% from last week`);
+
+            setKpis([
+                { title: "Today's Revenue", value: `${todaysRevenue.toLocaleString()} FCFA`, icon: DollarSign, change: `from ${todaysCompletedAppointments.length} completed bookings` },
+                { title: "Today's Bookings", value: todaysAppointments.length.toString(), icon: Calendar, change: `total for today` },
+                { title: "Weekly Occupancy", value: `${occupancyThisWeek.toFixed(0)}%`, icon: Users, change: occupancyChangeText },
+                { title: "Avg. Service Time", value: `${avgServiceTime} min`, icon: Clock, change: `avg. over ${allCompletedAppointments.length} services` },
             ]);
 
-            // 2. Process Weekly Revenue Chart
+            // --- Weekly Revenue Chart ---
             const last7Days = eachDayOfInterval({ start: subDays(today, 6), end: today });
             const weeklyChartData = last7Days.map(day => {
                 const dayRevenue = loadedAppointments
                     .filter((a) => a.status === 'Completed' && isSameDay(parseISO(a.date), day))
                     .reduce((sum, a) => sum + a.cost, 0);
-                return {
-                    day: format(day, 'E'),
-                    revenue: dayRevenue,
-                };
+                return { day: format(day, 'E'), revenue: dayRevenue };
             });
             setChartData(weeklyChartData);
 
-            // 3. Process This Week's Schedule
+            // --- This Week's Schedule ---
             const weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
             const timeSlots = ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00"];
             
@@ -82,12 +105,7 @@ export default function DashboardPage() {
                 weekDays.forEach(day => newSchedule[time][day] = "");
             });
             
-            const startOfThisWeek = getStartOfWeek(today);
-            const appointmentsThisWeek = loadedAppointments.filter(a => {
-                const apptDate = parseISO(a.date);
-                return apptDate >= startOfThisWeek && apptDate <= endOfWeek(startOfThisWeek, { weekStartsOn: 1 });
-            });
-
+            // Use `appointmentsThisWeek` which is already filtered for the correct date range and status
             appointmentsThisWeek.forEach((appt) => {
                 const apptDate = parseISO(appt.date);
                 const dayIndex = (getDay(apptDate) + 6) % 7; 
