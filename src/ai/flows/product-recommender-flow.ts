@@ -11,7 +11,7 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-export const ProductRecommenderInputSchema = z.object({
+const ProductRecommenderInputSchema = z.object({
   hairType: z.string().describe('The user\'s hair type (e.g., Straight, Wavy, Curly, Coily).'),
   hairConcerns: z.array(z.string()).describe('A list of the user\'s hair concerns (e.g., Dryness, Frizz, Damage).'),
   hairGoals: z.array(z.string()).describe('A list of the user\'s hair goals (e.g., Add Volume, Define Curls).'),
@@ -24,7 +24,7 @@ const RecommendedProductSchema = z.object({
     usage: z.string().describe('Brief instructions on how or when to use this type of product.'),
 });
 
-export const ProductRecommenderOutputSchema = z.object({
+const ProductRecommenderOutputSchema = z.object({
   recommendations: z.array(RecommendedProductSchema).describe('A list of recommended hair product types.'),
 });
 export type ProductRecommenderOutput = z.infer<typeof ProductRecommenderOutputSchema>;
