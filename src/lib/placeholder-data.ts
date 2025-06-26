@@ -43,11 +43,11 @@ export const salons: Salon[] = [
     name: "Élégance Coiffure",
     location: "Almadies, Dakar",
     status: "Ouvert",
-    imageUrl: "https://images.unsplash.com/photo-1599351431202-192a833e2b17?q=80&w=2070&auto=format&fit=crop",
+    imageUrl: "https://placehold.co/600x400.png",
     gallery: [
-      "https://images.unsplash.com/photo-1599351431202-192a833e2b17?q=80&w=2070&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1622288432454-24154940562f?q=80&w=1935&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1632345031435-8727f6897f53?q=80&w=2070&auto=format&fit=crop",
+      "https://placehold.co/800x600.png",
+      "https://placehold.co/800x600.png",
+      "https://placehold.co/800x600.png",
     ],
     reviews: [
       { id: "r1", author: "Fatou Diop", rating: 5, comment: "Service incroyable ! Mes cheveux n'ont jamais été aussi beaux." },
@@ -61,8 +61,8 @@ export const salons: Salon[] = [
       { id: "s4", name: "Soin Revitalisant Profond", category: "Soins", price: 10000, duration: 60 },
     ],
     stylists: [
-      { id: "st1", name: "Aminata", specialty: "Coloration", imageUrl: "https://placehold.co/100x100.png", bio: "Coloriste passionnée avec 10 ans d'expérience, spécialisée en balayage et transformations de couleurs vibrantes.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
-      { id: "st2", name: "Ousmane", specialty: "Coupes Homme", imageUrl: "https://placehold.co/100x100.png", bio: "Expert en soins pour hommes modernes et classiques. Coupes de précision et dégradés nets sont ma signature.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
+      { id: "st1", name: "Aminata", specialty: "Coloration", imageUrl: "https://placehold.co/400x400.png", bio: "Coloriste passionnée avec 10 ans d'expérience, spécialisée en balayage et transformations de couleurs vibrantes.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
+      { id: "st2", name: "Ousmane", specialty: "Coupes Homme", imageUrl: "https://placehold.co/400x400.png", bio: "Expert en soins pour hommes modernes et classiques. Coupes de précision et dégradés nets sont ma signature.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
     ],
   },
   {
@@ -85,8 +85,8 @@ export const salons: Salon[] = [
         { id: "s3", name: "Tresses", category: "Tresses", price: 22000, duration: 260 },
     ],
     stylists: [
-        { id: "st3", name: "Khadija", specialty: "Tresses", imageUrl: "https://placehold.co/100x100.png", bio: "Maîtresse tresseuse au toucher doux. Des nattes collées complexes aux chignons élégants, je donne vie à votre vision.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
-        { id: "st4", name: "Ibrahim", specialty: "Coiffage", imageUrl: "https://placehold.co/100x100.png", bio: "Styliste créatif qui adore créer des looks uniques et tendance pour toutes les occasions.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
+        { id: "st3", name: "Khadija", specialty: "Tresses", imageUrl: "https://placehold.co/400x400.png", bio: "Maîtresse tresseuse au toucher doux. Des nattes collées complexes aux chignons élégants, je donne vie à votre vision.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
+        { id: "st4", name: "Ibrahim", specialty: "Coiffage", imageUrl: "https://placehold.co/400x400.png", bio: "Styliste créatif qui adore créer des looks uniques et tendance pour toutes les occasions.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
     ],
   },
   {
@@ -108,7 +108,7 @@ export const salons: Salon[] = [
         { id: "s6", name: "Taille de Barbe", category: "Barbe", price: 3000, duration: 20 },
     ],
     stylists: [
-        { id: "st5", name: "Moussa", specialty: "Barbier", imageUrl: "https://placehold.co/100x100.png", bio: "Barbier dévoué axé sur les lignes épurées et une finition parfaite. Votre barbe est entre de bonnes mains.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
+        { id: "st5", name: "Moussa", specialty: "Barbier", imageUrl: "https://placehold.co/400x400.png", bio: "Barbier dévoué axé sur les lignes épurées et une finition parfaite. Votre barbe est entre de bonnes mains.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
     ],
   },
   {
@@ -131,8 +131,8 @@ export const salons: Salon[] = [
       { id: "s7", name: "Défrisage", category: "Traitements", price: 12000, duration: 120 },
     ],
     stylists: [
-        { id: "st6", name: "Fatima", specialty: "Coiffage", imageUrl: "https://placehold.co/100x100.png", bio: "Je crois d'abord aux cheveux sains. Créons un style qui n'est pas seulement beau, mais aussi durable.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
-        { id: "st7", name: "Ndeye", specialty: "Traitements Chimiques", imageUrl: "https://placehold.co/100x100.png", bio: "Spécialisée dans les défrisages, les permanentes et les soins pour gérer et embellir tous les types de cheveux.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
+        { id: "st6", name: "Fatima", specialty: "Coiffage", imageUrl: "https://placehold.co/400x400.png", bio: "Je crois d'abord aux cheveux sains. Créons un style qui n'est pas seulement beau, mais aussi durable.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
+        { id: "st7", name: "Ndeye", specialty: "Traitements Chimiques", imageUrl: "https://placehold.co/400x400.png", bio: "Spécialisée dans les défrisages, les permanentes et les soins pour gérer et embellir tous les types de cheveux.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
     ],
   },
 ];
