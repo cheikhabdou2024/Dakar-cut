@@ -3,6 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
+import { BottomNavBar } from '@/components/bottom-navbar';
 
 export const metadata: Metadata = {
   title: 'Dakar Hair Connect',
@@ -25,9 +26,10 @@ export default function RootLayout({
       <body className="font-body antialiased">
         <div className="relative flex min-h-screen flex-col bg-background">
           <Header />
-          <main className="flex-1">{children}</main>
+          <main className="flex-1 pb-20 md:pb-0">{children}</main>
           <Footer />
         </div>
+        <BottomNavBar />
         <Toaster />
       </body>
     </html>
