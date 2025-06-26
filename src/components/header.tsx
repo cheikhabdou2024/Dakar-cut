@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
-import { Scissors, Sparkles, Menu } from "lucide-react";
+import { Scissors, Sparkles, Menu, TestTube2 } from "lucide-react";
 
 export function Header() {
   const navItems = [
@@ -11,6 +11,7 @@ export function Header() {
     { href: "/dashboard", label: "For Stylists" },
     { href: "/style-ai", label: "Style AI" },
     { href: "/inspiration", label: "Inspiration" },
+    { href: "/recommender", label: "Product AI" },
   ];
 
   return (
@@ -23,7 +24,7 @@ export function Header() {
         </Link>
         
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
+        <nav className="hidden lg:flex items-center space-x-6 text-sm font-medium">
           <Link href="/" className="transition-colors hover:text-primary">Find a Salon</Link>
           <Link href="/appointments" className="transition-colors hover:text-primary">My Appointments</Link>
           <Link href="/dashboard" className="transition-colors hover:text-primary">For Stylists</Link>
@@ -32,15 +33,19 @@ export function Header() {
               <Sparkles className="h-4 w-4" />
               Inspiration
           </Link>
+           <Link href="/recommender" className="transition-colors hover:text-primary flex items-center gap-1">
+              <TestTube2 className="h-4 w-4" />
+              Product AI
+          </Link>
         </nav>
         
-        <div className="hidden md:flex flex-1 items-center justify-end space-x-4">
+        <div className="hidden lg:flex flex-1 items-center justify-end space-x-4">
           <Button variant="ghost">Log In</Button>
           <Button>Sign Up</Button>
         </div>
 
         {/* Mobile Navigation Trigger */}
-        <div className="flex flex-1 justify-end md:hidden">
+        <div className="flex flex-1 justify-end lg:hidden">
             <Sheet>
                 <SheetTrigger asChild>
                     <Button variant="ghost" size="icon" className="shrink-0">
