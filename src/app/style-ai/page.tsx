@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,8 @@ import Image from "next/image";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { getStyleSuggestion } from "@/ai/flows/style-suggestion-flow";
+import { getHairstyleExamples, type HairstyleExample } from "@/ai/flows/hairstyle-examples-flow";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function StyleAiPage() {
   const { toast } = useToast();
@@ -19,14 +21,28 @@ export default function StyleAiPage() {
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   
-  const hairstyles = [
-    { name: "Classic Bob", image: "https://placehold.co/300x300.png", hint: "woman bob hairstyle" },
-    { name: "Long Waves", image: "https://placehold.co/300x300.png", hint: "woman long waves" },
-    { name: "Pixie Cut", image: "https://placehold.co/300x300.png", hint: "woman pixie cut" },
-    { name: "Cornrows", image: "https://placehold.co/300x300.png", hint: "woman cornrows" },
-    { name: "High-Top Fade", image: "https://placehold.co/300x300.png", hint: "man fade haircut" },
-    { name: "Afro", image: "https://placehold.co/300x300.png", hint: "woman afro hairstyle" },
-  ];
+  const [hairstyleExamples, setHairstyleExamples] = useState<HairstyleExample[]>([]);
+  const [areExamplesLoading, setAreExamplesLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchExamples() {
+      try {
+        setAreExamplesLoading(true);
+        const result = await getHairstyleExamples();
+        setHairstyleExamples(result.examples);
+      } catch (error) {
+        console.error("Error fetching hairstyle examples:", error);
+        toast({
+          variant: "destructive",
+          title: "Could not load styles",
+          description: "Failed to load hairstyle examples. Please refresh the page.",
+        });
+      } finally {
+        setAreExamplesLoading(false);
+      }
+    }
+    fetchExamples();
+  }, [toast]);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -97,23 +113,31 @@ export default function StyleAiPage() {
 
             <div className="font-headline text-lg mt-6 flex items-center gap-2"><Scissors className="h-5 w-5"/> 2. Choose a Hairstyle</div>
             <div className="grid grid-cols-3 gap-4">
-              {hairstyles.map((style) => (
-                <div key={style.name} 
-                  className={cn(
-                    "relative aspect-square cursor-pointer group rounded-lg overflow-hidden border-2 transition-all",
-                    selectedStyle === style.name ? "border-primary ring-2 ring-primary/50" : "border-transparent"
-                  )}
-                  onClick={() => setSelectedStyle(style.name)}
-                  >
-                    <Image src={style.image} alt={style.name} layout="fill" objectFit="cover" data-ai-hint={style.hint}/>
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <span className="text-white text-center text-sm font-bold p-1">{style.name}</span>
+              {areExamplesLoading ? (
+                  Array.from({ length: 6 }).map((_, index) => (
+                    <div key={index} className="aspect-square">
+                        <Skeleton className="w-full h-full rounded-lg" />
                     </div>
-                </div>
-              ))}
+                  ))
+              ) : (
+                hairstyleExamples.map((style) => (
+                  <div key={style.name} 
+                    className={cn(
+                      "relative aspect-square cursor-pointer group rounded-lg overflow-hidden border-2 transition-all",
+                      selectedStyle === style.name ? "border-primary ring-2 ring-primary/50" : "border-transparent"
+                    )}
+                    onClick={() => setSelectedStyle(style.name)}
+                    >
+                      <Image src={style.image} alt={style.name} layout="fill" objectFit="cover" />
+                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                          <span className="text-white text-center text-sm font-bold p-1">{style.name}</span>
+                      </div>
+                  </div>
+                ))
+              )}
             </div>
 
-            <Button className="w-full mt-6" size="lg" onClick={handleGenerate} disabled={isLoading || !originalImage || !selectedStyle}>
+            <Button className="w-full mt-6" size="lg" onClick={handleGenerate} disabled={isLoading || !originalImage || !selectedStyle || areExamplesLoading}>
               {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Wand2 className="mr-2" />}
               {isLoading ? "Generating..." : "Generate New Look"}
             </Button>
