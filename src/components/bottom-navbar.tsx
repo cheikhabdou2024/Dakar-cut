@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -7,8 +8,8 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/", label: "Salons", icon: Home },
-  { href: "/appointments", label: "Bookings", icon: Calendar },
-  { href: "/style-ai", label: "Style AI", icon: Wand2 },
+  { href: "/appointments", label: "Réservations", icon: Calendar },
+  { href: "/style-ai", label: "IA Coiffure", icon: Wand2 },
   { href: "/inspiration", label: "Inspiration", icon: Sparkles },
 ];
 

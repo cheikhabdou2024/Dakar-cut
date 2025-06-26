@@ -50,8 +50,8 @@ export default function AppointmentsPage() {
     setIsLoading(false);
   }, []);
 
-  const upcomingAppointments = appointments.filter(a => a.status === 'Upcoming');
-  const pastAppointments = appointments.filter(a => a.status !== 'Upcoming');
+  const upcomingAppointments = appointments.filter(a => a.status === 'À venir');
+  const pastAppointments = appointments.filter(a => a.status !== 'À venir');
 
   const handleCancelClick = (appointmentId: string) => {
     setSelectedAppointmentId(appointmentId);
@@ -62,15 +62,15 @@ export default function AppointmentsPage() {
     if (!selectedAppointmentId) return;
 
     const updatedAppointments = appointments.map(appt =>
-      appt.id === selectedAppointmentId ? { ...appt, status: 'Cancelled' as const } : appt
+      appt.id === selectedAppointmentId ? { ...appt, status: 'Annulé' as const } : appt
     );
 
     setAppointments(updatedAppointments);
     localStorage.setItem(APPOINTMENTS_STORAGE_KEY, JSON.stringify(updatedAppointments));
 
     toast({
-      title: "Appointment Cancelled",
-      description: "Your appointment has been successfully cancelled.",
+      title: "Rendez-vous Annulé",
+      description: "Votre rendez-vous a bien été annulé.",
     });
 
     setIsCancelDialogOpen(false);
@@ -92,7 +92,7 @@ export default function AppointmentsPage() {
         if (salonIndex > -1) {
             const newReview = {
                 id: `rev-${Date.now()}`,
-                author: "Guest User", // Hardcoded as no auth
+                author: "Utilisateur Invité", // Hardcoded as no auth
                 rating,
                 comment,
             };
@@ -105,25 +105,25 @@ export default function AppointmentsPage() {
             localStorage.setItem(SALONS_STORAGE_KEY, JSON.stringify(salons));
             
             toast({ 
-                title: "Review Submitted!", 
-                description: "Thank you for your feedback." 
+                title: "Avis soumis !", 
+                description: "Merci pour votre commentaire." 
             });
             setIsReviewDialogOpen(false);
         } else {
-             toast({ variant: "destructive", title: "Error", description: "Could not find salon to submit review." });
+             toast({ variant: "destructive", title: "Erreur", description: "Impossible de trouver le salon pour soumettre l'avis." });
         }
     } catch (error) {
         console.error("Failed to submit review", error);
-        toast({ variant: "destructive", title: "Error", description: "Something went wrong while submitting your review." });
+        toast({ variant: "destructive", title: "Erreur", description: "Un problème est survenu lors de la soumission de votre avis." });
     }
   };
 
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'Completed':
+      case 'Terminé':
         return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'Cancelled':
+      case 'Annulé':
         return <XCircle className="h-4 w-4 text-red-500" />;
       default:
         return <Calendar className="h-4 w-4 text-blue-500" />;
@@ -131,7 +131,7 @@ export default function AppointmentsPage() {
   };
   
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    return new Date(dateString).toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   };
 
   if (isLoading) {
@@ -146,14 +146,14 @@ export default function AppointmentsPage() {
     <>
       <div className="container mx-auto px-4 py-8">
         <header className="mb-8">
-          <h1 className="font-headline text-4xl font-bold text-primary">My Appointments</h1>
-          <p className="text-muted-foreground">Manage your past and future bookings.</p>
+          <h1 className="font-headline text-4xl font-bold text-primary">Mes Rendez-vous</h1>
+          <p className="text-muted-foreground">Gérez vos réservations passées et futures.</p>
         </header>
 
         <Tabs defaultValue="upcoming" className="w-full">
           <TabsList className="grid w-full grid-cols-2 md:w-[400px]">
-            <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
-            <TabsTrigger value="past">History</TabsTrigger>
+            <TabsTrigger value="upcoming">À venir</TabsTrigger>
+            <TabsTrigger value="past">Historique</TabsTrigger>
           </TabsList>
           <TabsContent value="upcoming">
             <div className="grid gap-6 mt-6 md:grid-cols-2 lg:grid-cols-3">
@@ -162,7 +162,7 @@ export default function AppointmentsPage() {
                   <Card key={appt.id} className="flex flex-col">
                     <CardHeader>
                       <CardTitle className="font-headline text-primary">{appt.salonName}</CardTitle>
-                      <Badge variant={appt.status === 'Upcoming' ? 'default' : 'secondary'} className="w-fit flex items-center">
+                      <Badge variant={appt.status === 'À venir' ? 'default' : 'secondary'} className="w-fit flex items-center">
                         {getStatusIcon(appt.status)}
                         <span className="ml-2">{appt.status}</span>
                       </Badge>
@@ -177,13 +177,13 @@ export default function AppointmentsPage() {
                       <div className="flex items-center text-sm"><Tag className="mr-2 h-4 w-4 text-muted-foreground" /> {appt.cost} FCFA</div>
                     </CardContent>
                     <CardFooter className="flex gap-2">
-                      <Button variant="outline" disabled>Modify</Button>
-                      <Button variant="destructive" onClick={() => handleCancelClick(appt.id)}>Cancel</Button>
+                      <Button variant="outline" disabled>Modifier</Button>
+                      <Button variant="destructive" onClick={() => handleCancelClick(appt.id)}>Annuler</Button>
                     </CardFooter>
                   </Card>
                 ))
               ) : (
-                <p>You have no upcoming appointments.</p>
+                <p>Vous n'avez aucun rendez-vous à venir.</p>
               )}
             </div>
           </TabsContent>
@@ -208,12 +208,12 @@ export default function AppointmentsPage() {
                       )}
                     </CardContent>
                     <CardFooter>
-                      {appt.status === 'Completed' && <Button onClick={() => handleLeaveReviewClick(appt)}>Leave a Review</Button>}
+                      {appt.status === 'Terminé' && <Button onClick={() => handleLeaveReviewClick(appt)}>Laisser un avis</Button>}
                     </CardFooter>
                   </Card>
                 ))
               ) : (
-                <p>You have no past appointments.</p>
+                <p>Vous n'avez aucun rendez-vous passé.</p>
               )}
             </div>
           </TabsContent>
@@ -223,15 +223,15 @@ export default function AppointmentsPage() {
       <AlertDialog open={isCancelDialogOpen} onOpenChange={setIsCancelDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>Êtes-vous sûr(e) ?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently cancel your appointment.
+              Cette action est irréversible. Cela annulera définitivement votre rendez-vous.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Back</AlertDialogCancel>
+            <AlertDialogCancel>Retour</AlertDialogCancel>
             <AlertDialogAction onClick={handleConfirmCancel} className="bg-destructive hover:bg-destructive/90">
-              Yes, cancel appointment
+              Oui, annuler le rendez-vous
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

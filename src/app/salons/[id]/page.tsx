@@ -63,7 +63,7 @@ export default function SalonPage({ params }: { params: { id: string } }) {
           <span className="mx-2">|</span>
           <Star className="h-5 w-5 mr-1 text-accent fill-current" />
           <span className="font-bold text-foreground">{averageRating}</span>
-          <span className="ml-1">({salon.reviews.length} reviews)</span>
+          <span className="ml-1">({salon.reviews.length} avis)</span>
         </div>
       </header>
       
@@ -74,7 +74,7 @@ export default function SalonPage({ params }: { params: { id: string } }) {
               {salon.gallery.map((url, index) => (
                 <CarouselItem key={index}>
                   <div className="relative h-96">
-                    <Image src={url} alt={`Gallery image ${index + 1} for ${salon.name}`} layout="fill" objectFit="cover" data-ai-hint="salon interior design" />
+                    <Image src={url} alt={`Image de la galerie ${index + 1} pour ${salon.name}`} layout="fill" objectFit="cover" data-ai-hint="salon interior design" />
                   </div>
                 </CarouselItem>
               ))}
@@ -86,8 +86,8 @@ export default function SalonPage({ params }: { params: { id: string } }) {
           <Tabs defaultValue="services" className="w-full">
             <TabsList>
               <TabsTrigger value="services">Services</TabsTrigger>
-              <TabsTrigger value="stylists">Stylists</TabsTrigger>
-              <TabsTrigger value="reviews">Reviews</TabsTrigger>
+              <TabsTrigger value="stylists">Stylistes</TabsTrigger>
+              <TabsTrigger value="reviews">Avis</TabsTrigger>
             </TabsList>
             <TabsContent value="services" className="mt-4">
               <Accordion type="single" collapsible className="w-full">
@@ -104,7 +104,7 @@ export default function SalonPage({ params }: { params: { id: string } }) {
                                   </div>
                                   <div className="text-right">
                                     <p className="font-bold text-primary">{service.price} FCFA</p>
-                                    <Button size="sm" variant="ghost" className="h-auto p-1 text-xs" onClick={() => setIsBookingOpen(true)}>Book</Button>
+                                    <Button size="sm" variant="ghost" className="h-auto p-1 text-xs" onClick={() => setIsBookingOpen(true)}>Réserver</Button>
                                   </div>
                                 </li>
                              ))}
@@ -149,7 +149,7 @@ export default function SalonPage({ params }: { params: { id: string } }) {
                     </CardContent>
                   </Card>
                 )) : (
-                  <p className="text-muted-foreground text-center py-4">No reviews yet. Be the first to leave one!</p>
+                  <p className="text-muted-foreground text-center py-4">Pas encore d'avis. Soyez le premier à en laisser un !</p>
                 )}
               </div>
             </TabsContent>
@@ -159,15 +159,15 @@ export default function SalonPage({ params }: { params: { id: string } }) {
         <div className="lg:col-span-1">
             <Card className="sticky top-24 shadow-lg">
                 <CardHeader>
-                    <CardTitle className="font-headline text-2xl text-primary">Book an Appointment</CardTitle>
+                    <CardTitle className="font-headline text-2xl text-primary">Prendre un Rendez-vous</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <p className="text-muted-foreground mb-4">
-                        Find your perfect slot and get ready to be pampered.
+                        Trouvez votre créneau parfait et préparez-vous à être choyé(e).
                     </p>
                     <Button className="w-full text-lg py-6" onClick={() => setIsBookingOpen(true)}>
                         <Scissors className="mr-2 h-5 w-5"/>
-                        Book Now
+                        Réserver Maintenant
                     </Button>
                 </CardContent>
             </Card>

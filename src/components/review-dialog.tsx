@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -33,8 +34,8 @@ export function ReviewDialog({ salonId, salonName, open, onOpenChange, onReviewS
     if (rating === 0) {
       toast({
         variant: "destructive",
-        title: "Please select a rating.",
-        description: "You must give a star rating to submit a review.",
+        title: "Veuillez sélectionner une note.",
+        description: "Vous devez donner une note pour soumettre un avis.",
       });
       return;
     }
@@ -59,12 +60,12 @@ export function ReviewDialog({ salonId, salonName, open, onOpenChange, onReviewS
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="font-headline text-2xl">Leave a Review for {salonName}</DialogTitle>
-          <DialogDescription>Your feedback helps other users and the salon.</DialogDescription>
+          <DialogTitle className="font-headline text-2xl">Laisser un avis pour {salonName}</DialogTitle>
+          <DialogDescription>Vos commentaires aident les autres utilisateurs et le salon.</DialogDescription>
         </DialogHeader>
         <div className="py-4 space-y-4">
             <div>
-                <label className="font-medium text-sm mb-2 block">Rating</label>
+                <label className="font-medium text-sm mb-2 block">Note</label>
                 <div className="flex items-center space-x-1" onMouseLeave={() => setHoverRating(0)}>
                     {[1, 2, 3, 4, 5].map((star) => (
                     <Star
@@ -82,10 +83,10 @@ export function ReviewDialog({ salonId, salonName, open, onOpenChange, onReviewS
                 </div>
             </div>
              <div>
-                <label htmlFor="comment" className="font-medium text-sm mb-2 block">Comment (Optional)</label>
+                <label htmlFor="comment" className="font-medium text-sm mb-2 block">Commentaire (Facultatif)</label>
                 <Textarea
                     id="comment"
-                    placeholder="Share your experience..."
+                    placeholder="Partagez votre expérience..."
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                     className="min-h-[120px]"
@@ -93,8 +94,8 @@ export function ReviewDialog({ salonId, salonName, open, onOpenChange, onReviewS
             </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => handleClose(false)}>Cancel</Button>
-          <Button onClick={handleSubmit}>Submit Review</Button>
+          <Button variant="outline" onClick={() => handleClose(false)}>Annuler</Button>
+          <Button onClick={handleSubmit}>Soumettre l'avis</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

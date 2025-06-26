@@ -37,7 +37,7 @@ export default function StylistPage({ params }: { params: { id: string } }) {
       <div className="container mx-auto px-4 py-8">
         <Button variant="ghost" onClick={() => router.back()} className="mb-4">
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Salon
+          Retour au Salon
         </Button>
         <header className="relative mb-8 flex flex-col md:flex-row items-center gap-8">
             <Avatar className="h-32 w-32 border-4 border-primary shadow-lg">
@@ -48,10 +48,10 @@ export default function StylistPage({ params }: { params: { id: string } }) {
                  <h1 className="font-headline text-5xl font-bold text-primary">{stylist.name}</h1>
                 <p className="text-xl text-muted-foreground flex items-center gap-2 mt-2">
                     <Award className="h-5 w-5 text-accent" />
-                    Specialty: {stylist.specialty}
+                    Spécialité : {stylist.specialty}
                 </p>
                  <p className="text-lg text-muted-foreground mt-1">
-                    Working at <span className="font-semibold text-foreground">{salon.name}</span>
+                    Travaille chez <span className="font-semibold text-foreground">{salon.name}</span>
                  </p>
             </div>
         </header>
@@ -60,13 +60,13 @@ export default function StylistPage({ params }: { params: { id: string } }) {
           <div className="lg:col-span-1">
             <Card className="sticky top-24 shadow-lg">
                 <CardHeader>
-                    <CardTitle className="font-headline text-2xl">About {stylist.name.split(' ')[0]}</CardTitle>
+                    <CardTitle className="font-headline text-2xl">À propos de {stylist.name.split(' ')[0]}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <p className="text-muted-foreground">{stylist.bio}</p>
                     <Button className="w-full text-lg py-6" onClick={() => setIsBookingOpen(true)}>
                         <Scissors className="mr-2 h-5 w-5"/>
-                        Book with {stylist.name.split(' ')[0]}
+                        Réserver avec {stylist.name.split(' ')[0]}
                     </Button>
                 </CardContent>
             </Card>
@@ -79,7 +79,7 @@ export default function StylistPage({ params }: { params: { id: string } }) {
                     <div key={index} className="relative aspect-[3/4] rounded-lg overflow-hidden shadow-md group">
                         <Image 
                             src={url} 
-                            alt={`Portfolio image ${index + 1} by ${stylist.name}`} 
+                            alt={`Image du portfolio ${index + 1} par ${stylist.name}`} 
                             layout="fill" 
                             objectFit="cover" 
                             data-ai-hint="hairstyle fashion"

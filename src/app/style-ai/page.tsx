@@ -35,8 +35,8 @@ export default function StyleAiPage() {
         console.error("Error fetching hairstyle examples:", error);
         toast({
           variant: "destructive",
-          title: "Could not load styles",
-          description: "Failed to load hairstyle examples. Please refresh the page.",
+          title: "Impossible de charger les styles",
+          description: "Échec du chargement des exemples de coiffures. Veuillez rafraîchir la page.",
         });
       } finally {
         setAreExamplesLoading(false);
@@ -59,11 +59,11 @@ export default function StyleAiPage() {
 
   const handleGenerate = async () => {
     if (!originalImage) {
-      toast({ variant: "destructive", title: "Please upload a photo first." });
+      toast({ variant: "destructive", title: "Veuillez d'abord télécharger une photo." });
       return;
     }
     if (!hairstylePrompt) {
-      toast({ variant: "destructive", title: "Please describe a hairstyle." });
+      toast({ variant: "destructive", title: "Veuillez décrire une coiffure." });
       return;
     }
 
@@ -80,8 +80,8 @@ export default function StyleAiPage() {
       console.error("Error generating style:", error);
       toast({
         variant: "destructive",
-        title: "Generation Failed",
-        description: "Something went wrong. Please try again.",
+        title: "La génération a échoué",
+        description: "Un problème est survenu. Veuillez réessayer.",
       });
     } finally {
       setIsLoading(false);
@@ -93,36 +93,36 @@ export default function StyleAiPage() {
     <div className="container mx-auto px-4 py-8">
       <header className="mb-8 text-center">
         <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary flex items-center justify-center gap-3">
-          <Wand2 className="h-10 w-10"/> Style AI Try-On
+          <Wand2 className="h-10 w-10"/> Essai Virtuel de Coiffure IA
         </h1>
-        <p className="text-muted-foreground mt-2">Virtually try on a new look before you book.</p>
+        <p className="text-muted-foreground mt-2">Essayez virtuellement un nouveau look avant de réserver.</p>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <Card>
           <CardHeader>
             <CardTitle className="font-headline flex items-center gap-2">
-              <Upload className="h-5 w-5" /> 1. Your Photo
+              <Upload className="h-5 w-5" /> 1. Votre Photo
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid w-full max-w-sm items-center gap-1.5">
-              <Label htmlFor="picture">Upload your picture</Label>
+              <Label htmlFor="picture">Téléchargez votre photo</Label>
               <Input id="picture" type="file" accept="image/*" onChange={handleFileChange} />
-              <p className="text-xs text-muted-foreground">For best results, use a clear, front-facing photo.</p>
+              <p className="text-xs text-muted-foreground">Pour de meilleurs résultats, utilisez une photo de face et nette.</p>
             </div>
 
-            <div className="font-headline text-lg mt-6 flex items-center gap-2"><Scissors className="h-5 w-5"/> 2. Describe a Hairstyle</div>
+            <div className="font-headline text-lg mt-6 flex items-center gap-2"><Scissors className="h-5 w-5"/> 2. Décrivez une Coiffure</div>
             
             <Textarea
-              placeholder="e.g. 'A stylish mohawk with vibrant blue tips...'"
+              placeholder="ex: 'Un mohawk stylé avec des pointes bleues vibrantes...'"
               className="min-h-[100px]"
               value={hairstylePrompt}
               onChange={(e) => setHairstylePrompt(e.target.value)}
             />
 
             <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">Or start with an example:</p>
+                <p className="text-sm font-medium text-muted-foreground">Ou commencez avec un exemple :</p>
                 <div className="grid grid-cols-3 gap-4">
                 {areExamplesLoading ? (
                     Array.from({ length: 6 }).map((_, index) => (
@@ -148,7 +148,7 @@ export default function StyleAiPage() {
 
             <Button className="w-full mt-6" size="lg" onClick={handleGenerate} disabled={isLoading || !originalImage || !hairstylePrompt || areExamplesLoading}>
               {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Wand2 className="mr-2" />}
-              {isLoading ? "Generating..." : "Generate New Look"}
+              {isLoading ? "Génération en cours..." : "Générer le Nouveau Look"}
             </Button>
           </CardContent>
         </Card>
@@ -156,7 +156,7 @@ export default function StyleAiPage() {
         <Card>
           <CardHeader>
             <CardTitle className="font-headline flex items-center gap-2">
-              <Images className="h-5 w-5" /> Your Virtual Makeover
+              <Images className="h-5 w-5" /> Votre Relooking Virtuel
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -165,35 +165,33 @@ export default function StyleAiPage() {
                     <h3 className="text-center font-semibold">Original</h3>
                     <div className="aspect-square bg-muted rounded-lg flex items-center justify-center overflow-hidden">
                         {originalImage ? (
-                          <Image src={originalImage} alt="User's original photo" width={400} height={400} className="object-cover w-full h-full"/>
+                          <Image src={originalImage} alt="Photo originale de l'utilisateur" width={400} height={400} className="object-cover w-full h-full"/>
                         ) : (
-                          <div className="text-center text-muted-foreground p-4">Upload a photo to begin</div>
+                          <div className="text-center text-muted-foreground p-4">Téléchargez une photo pour commencer</div>
                         )}
                     </div>
                 </div>
                  <div className="space-y-2">
-                    <h3 className="text-center font-semibold">New Style</h3>
+                    <h3 className="text-center font-semibold">Nouveau Style</h3>
                     <div className="aspect-square bg-muted rounded-lg flex items-center justify-center overflow-hidden">
                          {isLoading ? (
                            <div className="flex flex-col items-center gap-2 text-muted-foreground">
                              <Loader2 className="h-8 w-8 animate-spin"/>
-                             <p>Generating...</p>
+                             <p>Génération...</p>
                            </div>
                          ) : generatedImage ? (
-                           <Image src={generatedImage} alt="User with new hairstyle" width={400} height={400} className="object-cover w-full h-full"/>
+                           <Image src={generatedImage} alt="Utilisateur avec une nouvelle coiffure" width={400} height={400} className="object-cover w-full h-full"/>
                          ) : (
-                           <div className="text-center text-muted-foreground p-4">Your new look will appear here</div>
+                           <div className="text-center text-muted-foreground p-4">Votre nouveau look apparaîtra ici</div>
                          )}
                     </div>
                 </div>
             </div>
-            {!isLoading && !generatedImage && <p className="text-center text-sm text-muted-foreground mt-4">Results will appear here after generation.</p>}
-            {generatedImage && <p className="text-center text-sm text-muted-foreground mt-4">Like your new look? Book an appointment now!</p>}
+            {!isLoading && !generatedImage && <p className="text-center text-sm text-muted-foreground mt-4">Les résultats apparaîtront ici après la génération.</p>}
+            {generatedImage && <p className="text-center text-sm text-muted-foreground mt-4">Vous aimez votre nouveau look ? Prenez rendez-vous maintenant !</p>}
           </CardContent>
         </Card>
       </div>
     </div>
   );
 }
-
-    

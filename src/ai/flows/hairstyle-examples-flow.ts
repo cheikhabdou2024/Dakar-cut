@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview AI flow for generating a gallery of hairstyle example images.
@@ -31,11 +32,11 @@ export async function getHairstyleExamples(): Promise<HairstyleExamplesOutput> {
 }
 
 const hairstylePrompts = [
-    "Classic Bob",
-    "Long Waves",
-    "Pixie Cut",
-    "Cornrows",
-    "High-Top Fade",
+    "Carré Classique",
+    "Ondulations Longues",
+    "Coupe Pixie",
+    "Nattes Collées",
+    "Dégradé Haut",
     "Afro",
 ];
 
@@ -49,7 +50,7 @@ const hairstyleExamplesFlow = ai.defineFlow(
     const examplePromises = hairstylePrompts.map(async (prompt) => {
         const {media} = await ai.generate({
             model: 'googleai/gemini-2.0-flash-preview-image-generation',
-            prompt: `Generate a studio portrait of a person with a '${prompt}' hairstyle. The image should be photorealistic and focus on showcasing the hairstyle clearly. The person should be looking forward.`,
+            prompt: `Générez un portrait de studio d'une personne avec une coiffure '{prompt}'. L'image doit être photoréaliste et se concentrer sur la mise en valeur claire de la coiffure. La personne doit regarder vers l'avant.`,
             config: {
                 responseModalities: ['TEXT', 'IMAGE'],
             },

@@ -11,9 +11,9 @@ import { Wand2, Loader2, Lightbulb, Sparkles, TestTube2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { getProductRecommendations, type ProductRecommenderOutput } from "@/ai/flows/product-recommender-flow";
 
-const hairTypes = ["Straight", "Wavy", "Curly", "Coily"];
-const hairConcerns = ["Dryness", "Frizz", "Split Ends", "Oily Scalp", "Dandruff", "Hair Loss", "Damage"];
-const hairGoals = ["Add Volume", "Increase Shine", "Define Curls", "Reduce Frizz", "Strengthen Hair", "Promote Growth"];
+const hairTypes = ["Lisse", "Ondulé", "Bouclé", "Crépu"];
+const hairConcerns = ["Sécheresse", "Frisottis", "Pointes fourchues", "Cuir chevelu gras", "Pellicules", "Chute de cheveux", "Cheveux abîmés"];
+const hairGoals = ["Ajouter du volume", "Augmenter la brillance", "Définir les boucles", "Réduire les frisottis", "Renforcer les cheveux", "Favoriser la pousse"];
 
 
 export default function RecommenderPage() {
@@ -34,11 +34,11 @@ export default function RecommenderPage() {
 
     const handleSubmit = async () => {
         if (!hairType) {
-            toast({ variant: "destructive", title: "Please select your hair type." });
+            toast({ variant: "destructive", title: "Veuillez sélectionner votre type de cheveux." });
             return;
         }
         if (selectedConcerns.length === 0 && selectedGoals.length === 0) {
-            toast({ variant: "destructive", title: "Please select at least one concern or goal." });
+            toast({ variant: "destructive", title: "Veuillez sélectionner au moins un problème ou un objectif." });
             return;
         }
 
@@ -56,8 +56,8 @@ export default function RecommenderPage() {
             console.error("Error getting recommendations:", error);
             toast({
                 variant: "destructive",
-                title: "Recommendation Failed",
-                description: "Something went wrong. Please try again later.",
+                title: "Échec de la recommandation",
+                description: "Un problème est survenu. Veuillez réessayer plus tard.",
             });
         } finally {
             setIsLoading(false);
@@ -69,23 +69,23 @@ export default function RecommenderPage() {
         <div className="container mx-auto px-4 py-8">
             <header className="mb-8 text-center">
                 <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary flex items-center justify-center gap-3">
-                <TestTube2 className="h-10 w-10" /> AI Product Recommender
+                <TestTube2 className="h-10 w-10" /> Recommandation de Produits par IA
                 </h1>
                 <p className="text-muted-foreground mt-2">
-                    Get personalized product advice based on your unique hair profile.
+                    Obtenez des conseils de produits personnalisés en fonction de votre profil capillaire unique.
                 </p>
             </header>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <Card className="lg:col-span-1">
                     <CardHeader>
-                        <CardTitle className="font-headline">Your Hair Profile</CardTitle>
-                        <CardDescription>Tell us about your hair.</CardDescription>
+                        <CardTitle className="font-headline">Votre Profil Capillaire</CardTitle>
+                        <CardDescription>Parlez-nous de vos cheveux.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
                         {/* Hair Type */}
                         <div>
-                            <Label className="font-semibold text-base">1. Hair Type</Label>
+                            <Label className="font-semibold text-base">1. Type de Cheveux</Label>
                              <RadioGroup value={hairType} onValueChange={setHairType} className="mt-2 grid grid-cols-2 gap-2">
                                 {hairTypes.map(type => (
                                     <div key={type} className="flex items-center space-x-2">
@@ -97,7 +97,7 @@ export default function RecommenderPage() {
                         </div>
                         {/* Hair Concerns */}
                         <div>
-                            <Label className="font-semibold text-base">2. Hair Concerns</Label>
+                            <Label className="font-semibold text-base">2. Problèmes Capillaires</Label>
                             <div className="mt-2 grid grid-cols-2 gap-2">
                                 {hairConcerns.map(concern => (
                                     <div key={concern} className="flex items-center space-x-2">
@@ -113,7 +113,7 @@ export default function RecommenderPage() {
                         </div>
                         {/* Hair Goals */}
                         <div>
-                            <Label className="font-semibold text-base">3. Hair Goals</Label>
+                            <Label className="font-semibold text-base">3. Objectifs Capillaires</Label>
                             <div className="mt-2 grid grid-cols-2 gap-2">
                                 {hairGoals.map(goal => (
                                     <div key={goal} className="flex items-center space-x-2">
@@ -139,7 +139,7 @@ export default function RecommenderPage() {
                             ) : (
                                 <Wand2 className="mr-2" />
                             )}
-                            {isLoading ? "Analyzing..." : "Get Recommendations"}
+                            {isLoading ? "Analyse en cours..." : "Obtenir des Recommandations"}
                         </Button>
                     </CardContent>
                 </Card>
@@ -148,22 +148,22 @@ export default function RecommenderPage() {
                      <Card className="min-h-full">
                         <CardHeader>
                             <CardTitle className="font-headline flex items-center gap-2">
-                                <Sparkles /> Your Personalized Routine
+                                <Sparkles /> Votre Routine Personnalisée
                             </CardTitle>
-                            <CardDescription>Our AI has crafted these suggestions just for you.</CardDescription>
+                            <CardDescription>Notre IA a élaboré ces suggestions juste pour vous.</CardDescription>
                         </CardHeader>
                         <CardContent>
                             {isLoading && (
                                 <div className="flex flex-col items-center justify-center h-64 text-muted-foreground">
                                     <Loader2 className="h-8 w-8 animate-spin mb-4" />
-                                    <p>Generating your personalized recommendations...</p>
+                                    <p>Génération de vos recommandations personnalisées...</p>
                                 </div>
                             )}
                             {!isLoading && !recommendations && (
                                 <div className="flex flex-col items-center justify-center h-64 text-muted-foreground text-center p-4">
                                      <Lightbulb className="h-10 w-10 mb-4 text-primary/50"/>
-                                    <p className="font-semibold">Your recommendations will appear here.</p>
-                                    <p className="text-sm">Fill out your hair profile to get started.</p>
+                                    <p className="font-semibold">Vos recommandations apparaîtront ici.</p>
+                                    <p className="text-sm">Remplissez votre profil capillaire pour commencer.</p>
                                 </div>
                             )}
                              {!isLoading && recommendations && (
@@ -175,11 +175,11 @@ export default function RecommenderPage() {
                                             </CardHeader>
                                             <CardContent className="space-y-2">
                                                 <div>
-                                                    <h4 className="font-semibold">Why you need it:</h4>
+                                                    <h4 className="font-semibold">Pourquoi vous en avez besoin :</h4>
                                                     <p className="text-sm text-muted-foreground">{rec.reason}</p>
                                                 </div>
                                                 <div>
-                                                    <h4 className="font-semibold">How to use it:</h4>
+                                                    <h4 className="font-semibold">Comment l'utiliser :</h4>
                                                     <p className="text-sm text-muted-foreground">{rec.usage}</p>
                                                 </div>
                                             </CardContent>
@@ -194,4 +194,3 @@ export default function RecommenderPage() {
         </div>
     );
 }
-

@@ -12,20 +12,20 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const ProductRecommenderInputSchema = z.object({
-  hairType: z.string().describe('The user\'s hair type (e.g., Straight, Wavy, Curly, Coily).'),
-  hairConcerns: z.array(z.string()).describe('A list of the user\'s hair concerns (e.g., Dryness, Frizz, Damage).'),
-  hairGoals: z.array(z.string()).describe('A list of the user\'s hair goals (e.g., Add Volume, Define Curls).'),
+  hairType: z.string().describe("Le type de cheveux de l'utilisateur (par ex., Lisse, Ondulé, Bouclé, Crépu)."),
+  hairConcerns: z.array(z.string()).describe("Une liste des problèmes capillaires de l'utilisateur (par ex., Sécheresse, Frisottis, Cheveux abîmés)."),
+  hairGoals: z.array(z.string()).describe("Une liste des objectifs capillaires de l'utilisateur (par ex., Ajouter du volume, Définir les boucles)."),
 });
 export type ProductRecommenderInput = z.infer<typeof ProductRecommenderInputSchema>;
 
 const RecommendedProductSchema = z.object({
-    productType: z.string().describe('The generic type of product recommended (e.g., "Sulfate-free Shampoo", "Deep Conditioner", "Leave-in Conditioner").'),
-    reason: z.string().describe('A brief explanation of why this product type is recommended for the user\'s specific hair profile.'),
-    usage: z.string().describe('Brief instructions on how or when to use this type of product.'),
+    productType: z.string().describe('Le type générique de produit recommandé (par ex., "Shampooing sans sulfate", "Après-shampooing hydratant", "Soin sans rinçage").'),
+    reason: z.string().describe('Une brève explication de la raison pour laquelle ce type de produit est recommandé pour le profil capillaire spécifique de l\'utilisateur.'),
+    usage: z.string().describe("Brèves instructions sur comment ou quand utiliser ce type de produit."),
 });
 
 const ProductRecommenderOutputSchema = z.object({
-  recommendations: z.array(RecommendedProductSchema).describe('A list of recommended hair product types.'),
+  recommendations: z.array(RecommendedProductSchema).describe('Une liste de types de produits capillaires recommandés.'),
 });
 export type ProductRecommenderOutput = z.infer<typeof ProductRecommenderOutputSchema>;
 
@@ -40,16 +40,16 @@ const prompt = ai.definePrompt({
     name: 'productRecommenderPrompt',
     input: { schema: ProductRecommenderInputSchema },
     output: { schema: ProductRecommenderOutputSchema },
-    prompt: `You are an expert trichologist and hairstylist. Based on the user's hair profile, recommend a short, curated list of 3-5 essential product *types*. 
+    prompt: `Vous êtes un trichologue et coiffeur expert. En fonction du profil capillaire de l'utilisateur, recommandez une courte liste de 3 à 5 *types* de produits essentiels. 
     
-    DO NOT recommend specific brand names. Focus on the generic category of product.
+    NE recommandez PAS de noms de marques spécifiques. Concentrez-vous sur la catégorie générique du produit.
 
-    User's Hair Profile:
-    - Hair Type: {{{hairType}}}
-    - Hair Concerns: {{#each hairConcerns}}- {{{this}}}\n{{/each}}
-    - Hair Goals: {{#each hairGoals}}- {{{this}}}\n{{/each}}
+    Profil Capillaire de l'Utilisateur:
+    - Type de Cheveux: {{{hairType}}}
+    - Problèmes Capillaires: {{#each hairConcerns}}- {{{this}}}\n{{/each}}
+    - Objectifs Capillaires: {{#each hairGoals}}- {{{this}}}\n{{/each}}
 
-    For each recommendation, provide a clear "productType", a concise "reason" explaining its benefits for the user's specific concerns and goals, and simple "usage" instructions.`,
+    Pour chaque recommandation, fournissez un "type de produit" clair, une "raison" concise expliquant ses avantages pour les problèmes et objectifs spécifiques de l'utilisateur, et des instructions d'"utilisation" simples.`,
 });
 
 

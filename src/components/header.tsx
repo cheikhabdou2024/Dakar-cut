@@ -10,28 +10,28 @@ export function Header() {
         {/* Logo and Title */}
         <Link href="/" className="flex items-center mr-6">
           <Scissors className="h-6 w-6 text-primary mr-2" />
-          <span className="font-bold font-headline text-lg">Dakar Hair Connect</span>
+          <span className="font-bold font-headline text-lg">Dakar Coiffure Connect</span>
         </Link>
         
         {/* Desktop Navigation */}
         <nav className="hidden lg:flex items-center space-x-6 text-sm font-medium">
-          <Link href="/" className="transition-colors hover:text-primary">Find a Salon</Link>
-          <Link href="/appointments" className="transition-colors hover:text-primary">My Appointments</Link>
-          <Link href="/dashboard" className="transition-colors hover:text-primary">For Stylists</Link>
-          <Link href="/style-ai" className="transition-colors hover:text-primary">Style AI</Link>
+          <Link href="/" className="transition-colors hover:text-primary">Trouver un Salon</Link>
+          <Link href="/appointments" className="transition-colors hover:text-primary">Mes Rendez-vous</Link>
+          <Link href="/dashboard" className="transition-colors hover:text-primary">Pour les Stylistes</Link>
+          <Link href="/style-ai" className="transition-colors hover:text-primary">IA Coiffure</Link>
           <Link href="/inspiration" className="transition-colors hover:text-primary flex items-center gap-1">
               <Sparkles className="h-4 w-4" />
               Inspiration
           </Link>
            <Link href="/recommender" className="transition-colors hover:text-primary flex items-center gap-1">
               <TestTube2 className="h-4 w-4" />
-              Product AI
+              IA Produits
           </Link>
         </nav>
         
         <div className="hidden lg:flex flex-1 items-center justify-end space-x-4">
-          <Button variant="ghost">Log In</Button>
-          <Button>Sign Up</Button>
+          <Button variant="ghost">Se Connecter</Button>
+          <Button>S'inscrire</Button>
         </div>
 
         {/* Mobile sheet menu has been replaced by the new bottom navigation bar */}

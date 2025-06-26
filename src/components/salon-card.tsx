@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,7 +22,7 @@ export function SalonCard({ salon }: SalonCardProps) {
         <div className="relative h-48 w-full">
           <Image
             src={salon.imageUrl}
-            alt={`Photo of ${salon.name}`}
+            alt={`Photo de ${salon.name}`}
             layout="fill"
             objectFit="cover"
             data-ai-hint="salon interior"
@@ -40,10 +41,10 @@ export function SalonCard({ salon }: SalonCardProps) {
         <div className="flex items-center font-bold">
           <Star className="h-5 w-5 text-accent fill-current mr-1" />
           <span>{averageRating}</span>
-          <span className="text-sm font-normal text-muted-foreground ml-1">({salon.reviews.length} reviews)</span>
+          <span className="text-sm font-normal text-muted-foreground ml-1">({salon.reviews.length} avis)</span>
         </div>
         <Button asChild>
-          <Link href={`/salons/${salon.id}`}>View</Link>
+          <Link href={`/salons/${salon.id}`}>Voir</Link>
         </Button>
       </CardFooter>
     </Card>

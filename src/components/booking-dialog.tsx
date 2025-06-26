@@ -19,6 +19,7 @@ import type { Salon, Appointment } from "@/lib/placeholder-data";
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle, Clock, Scissors, User, Calendar as CalendarIcon, ArrowRight, ArrowLeft } from "lucide-react";
 import { appointments as initialAppointments } from "@/lib/placeholder-data";
+import { fr } from 'date-fns/locale';
 
 interface BookingDialogProps {
   salon: Salon;
@@ -77,7 +78,7 @@ export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps)
       (appt) =>
         new Date(appt.date).toDateString() === selectedDate.toDateString() &&
         appt.salonId === salon.id &&
-        appt.status !== 'Cancelled'
+        appt.status !== 'Annulé'
     );
 
     let relevantAppointments = appointmentsOnDate;
@@ -126,8 +127,8 @@ export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps)
       if (step === 3) {
         toast({
             variant: "destructive",
-            title: "Time Slot No Longer Available",
-            description: "The selected time became unavailable due to other changes. Please choose another.",
+            title: "Créneau horaire non disponible",
+            description: "Le créneau sélectionné n'est plus disponible suite à d'autres changements. Veuillez en choisir un autre.",
         });
       }
     }
@@ -156,7 +157,7 @@ export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps)
         .map((s) => s.name),
       date: selectedDate!.toISOString(),
       time: selectedTime!,
-      status: 'Upcoming',
+      status: 'À venir',
       cost: totalCost,
       duration: totalDuration,
     };
@@ -177,15 +178,15 @@ export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps)
         console.error("Failed to save appointments to localStorage", error);
         toast({
             variant: "destructive",
-            title: "Booking Failed",
-            description: "Could not save your appointment. Please try again.",
+            title: "Échec de la réservation",
+            description: "Impossible d'enregistrer votre rendez-vous. Veuillez réessayer.",
         });
         return;
     }
 
     toast({
-      title: "Booking Confirmed!",
-      description: `Your appointment at ${salon.name} is confirmed for ${selectedDate?.toLocaleDateString()} at ${selectedTime}.`,
+      title: "Réservation Confirmée !",
+      description: `Votre rendez-vous à ${salon.name} est confirmé pour le ${selectedDate?.toLocaleDateString('fr-FR')} à ${selectedTime}.`,
     });
     onOpenChange(false);
     resetState();
@@ -211,8 +212,8 @@ export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps)
         return (
           <>
             <DialogHeader>
-              <DialogTitle className="font-headline text-2xl flex items-center gap-2"><Scissors />Select Services</DialogTitle>
-              <DialogDescription>Choose one or more services you'd like to book.</DialogDescription>
+              <DialogTitle className="font-headline text-2xl flex items-center gap-2"><Scissors />Sélectionner les Services</DialogTitle>
+              <DialogDescription>Choisissez un ou plusieurs services que vous souhaitez réserver.</DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4 max-h-64 overflow-y-auto">
               {salon.services.map((service) => (
@@ -231,13 +232,13 @@ export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps)
         return (
           <>
             <DialogHeader>
-              <DialogTitle className="font-headline text-2xl flex items-center gap-2"><User />Choose a Stylist</DialogTitle>
-              <DialogDescription>Select your preferred stylist or choose any available.</DialogDescription>
+              <DialogTitle className="font-headline text-2xl flex items-center gap-2"><User />Choisir un(e) Styliste</DialogTitle>
+              <DialogDescription>Sélectionnez votre styliste préféré(e) ou choisissez n'importe quel(le) disponible.</DialogDescription>
             </DialogHeader>
             <RadioGroup onValueChange={setSelectedStylist} value={selectedStylist ?? "any"} className="py-4">
               <div className="flex items-center space-x-2 p-2 rounded-md hover:bg-muted">
                 <RadioGroupItem value="any" id="any" />
-                <Label htmlFor="any" className="cursor-pointer">Any Available</Label>
+                <Label htmlFor="any" className="cursor-pointer">N'importe quel(le) disponible</Label>
               </div>
               {salon.stylists.map((stylist) => (
                 <div key={stylist.id} className="flex items-center space-x-2 p-2 rounded-md hover:bg-muted">
@@ -252,8 +253,8 @@ export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps)
         return (
           <>
             <DialogHeader>
-              <DialogTitle className="font-headline text-2xl flex items-center gap-2"><CalendarIcon />Select Date & Time</DialogTitle>
-              <DialogDescription>Pick a date and time for your appointment.</DialogDescription>
+              <DialogTitle className="font-headline text-2xl flex items-center gap-2"><CalendarIcon />Sélectionner la Date & l'Heure</DialogTitle>
+              <DialogDescription>Choisissez une date et une heure pour votre rendez-vous.</DialogDescription>
             </DialogHeader>
             <div className="flex flex-col md:flex-row gap-4">
                 <Calendar
@@ -262,6 +263,7 @@ export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps)
                   onSelect={(date) => { setSelectedDate(date); setSelectedTime(null); }}
                   className="rounded-md border"
                   disabled={(date) => date < new Date(new Date().setDate(new Date().getDate() - 1))}
+                  locale={fr}
                 />
                 <div className="grid grid-cols-3 gap-2 h-full max-h-64 overflow-y-auto">
                   {timeSlots.map(time => (
@@ -277,18 +279,18 @@ export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps)
         return (
             <>
               <DialogHeader>
-                <DialogTitle className="font-headline text-2xl flex items-center gap-2"><CheckCircle />Confirm Booking</DialogTitle>
-                <DialogDescription>Please review your appointment details below.</DialogDescription>
+                <DialogTitle className="font-headline text-2xl flex items-center gap-2"><CheckCircle />Confirmer la Réservation</DialogTitle>
+                <DialogDescription>Veuillez vérifier les détails de votre rendez-vous ci-dessous.</DialogDescription>
               </DialogHeader>
               <div className="space-y-4 py-4">
-                <div><strong>Salon:</strong> {salon.name}</div>
-                <div><strong>Services:</strong> {salon.services.filter(s => selectedServices.includes(s.id)).map(s => s.name).join(', ')}</div>
-                <div><strong>Stylist:</strong> {selectedStylist === 'any' || !selectedStylist ? 'Any Available' : salon.stylists.find(s => s.id === selectedStylist)?.name}</div>
-                <div><strong>Date:</strong> {selectedDate?.toLocaleDateString()}</div>
-                <div><strong>Time:</strong> {selectedTime}</div>
+                <div><strong>Salon :</strong> {salon.name}</div>
+                <div><strong>Services :</strong> {salon.services.filter(s => selectedServices.includes(s.id)).map(s => s.name).join(', ')}</div>
+                <div><strong>Styliste :</strong> {selectedStylist === 'any' || !selectedStylist ? 'N\'importe quel(le) disponible' : salon.stylists.find(s => s.id === selectedStylist)?.name}</div>
+                <div><strong>Date :</strong> {selectedDate?.toLocaleDateString('fr-FR')}</div>
+                <div><strong>Heure :</strong> {selectedTime}</div>
                 <hr/>
-                <div className="font-bold text-lg">Total Cost: <span className="text-primary">{totalCost} FCFA</span></div>
-                <div className="text-muted-foreground">Estimated Duration: {totalDuration} minutes</div>
+                <div className="font-bold text-lg">Coût Total : <span className="text-primary">{totalCost} FCFA</span></div>
+                <div className="text-muted-foreground">Durée Estimée : {totalDuration} minutes</div>
               </div>
             </>
         )
@@ -314,9 +316,9 @@ export function BookingDialog({ salon, open, onOpenChange }: BookingDialogProps)
       <DialogContent className="sm:max-w-[425px] md:sm:max-w-[700px]">
         {renderStep()}
         <DialogFooter className="flex justify-between w-full">
-            {step > 1 && <Button variant="outline" onClick={handleBackStep}><ArrowLeft className="mr-2 h-4 w-4"/> Back</Button>}
-            {step < 4 && <Button onClick={handleNextStep} disabled={(step === 1 && selectedServices.length === 0) || (step === 2 && !selectedStylist) || (step === 3 && (!selectedDate || !selectedTime || (selectedTime && bookedSlots.includes(selectedTime))))} className="ml-auto">Next <ArrowRight className="ml-2 h-4 w-4"/></Button>}
-            {step === 4 && <Button onClick={handleBooking} className="bg-green-600 hover:bg-green-700">Confirm Appointment</Button>}
+            {step > 1 && <Button variant="outline" onClick={handleBackStep}><ArrowLeft className="mr-2 h-4 w-4"/> Retour</Button>}
+            {step < 4 && <Button onClick={handleNextStep} disabled={(step === 1 && selectedServices.length === 0) || (step === 2 && !selectedStylist) || (step === 3 && (!selectedDate || !selectedTime || (selectedTime && bookedSlots.includes(selectedTime))))} className="ml-auto">Suivant <ArrowRight className="ml-2 h-4 w-4"/></Button>}
+            {step === 4 && <Button onClick={handleBooking} className="bg-green-600 hover:bg-green-700">Confirmer le Rendez-vous</Button>}
         </DialogFooter>
       </DialogContent>
     </Dialog>

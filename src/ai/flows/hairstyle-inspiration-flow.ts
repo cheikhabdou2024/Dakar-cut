@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview AI flow for generating hairstyle inspiration images.
@@ -39,7 +40,7 @@ const hairstyleInspirationFlow = ai.defineFlow(
   async (input) => {
     const {media} = await ai.generate({
       model: 'googleai/gemini-2.0-flash-preview-image-generation',
-      prompt: `Generate a photorealistic image of a person with the following hairstyle: '${input.prompt}'. Focus on the hairstyle. The person should be looking forward.`,
+      prompt: `Générez une image photoréaliste d'une personne avec la coiffure suivante : '${input.prompt}'. Concentrez-vous sur la coiffure. La personne doit regarder vers l'avant.`,
       config: {
         responseModalities: ['TEXT', 'IMAGE'],
       },

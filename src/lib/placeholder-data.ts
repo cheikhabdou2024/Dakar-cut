@@ -27,7 +27,7 @@ export type Salon = {
   id: string;
   name: string;
   location: string;
-  status: 'Open' | 'Closed';
+  status: 'Ouvert' | 'Fermé';
   imageUrl: string;
   gallery: string[];
   reviews: Review[];
@@ -38,9 +38,9 @@ export type Salon = {
 export const salons: Salon[] = [
   {
     id: "1",
-    name: "Elegance Coiffure",
+    name: "Élégance Coiffure",
     location: "Almadies, Dakar",
-    status: "Open",
+    status: "Ouvert",
     imageUrl: "https://placehold.co/600x400.png",
     gallery: [
       "https://placehold.co/800x600.png",
@@ -48,24 +48,24 @@ export const salons: Salon[] = [
       "https://placehold.co/800x600.png",
     ],
     reviews: [
-      { id: "r1", author: "Fatou Diop", rating: 5, comment: "Amazing service! My hair has never looked better." },
-      { id: "r2", author: "Moussa Gueye", rating: 4, comment: "Great place, very professional staff." },
+      { id: "r1", author: "Fatou Diop", rating: 5, comment: "Service incroyable ! Mes cheveux n'ont jamais été aussi beaux." },
+      { id: "r2", author: "Moussa Gueye", rating: 4, comment: "Super endroit, personnel très professionnel." },
     ],
     services: [
-      { id: "s1", name: "Men's Haircut", category: "Coupes", price: 5000, duration: 30 },
-      { id: "s2", name: "Women's Cut & Style", category: "Coupes", price: 15000, duration: 90 },
-      { id: "s3", name: "Braiding", category: "Tresses", price: 20000, duration: 240 },
+      { id: "s1", name: "Coupe Homme", category: "Coupes", price: 5000, duration: 30 },
+      { id: "s2", name: "Coupe & Coiffage Femme", category: "Coupes", price: 15000, duration: 90 },
+      { id: "s3", name: "Tresses", category: "Tresses", price: 20000, duration: 240 },
     ],
     stylists: [
-      { id: "st1", name: "Aminata", specialty: "Coloring", imageUrl: "https://placehold.co/100x100.png", bio: "A passionate colorist with 10 years of experience, specializing in balayage and vibrant color transformations.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
-      { id: "st2", name: "Ousmane", specialty: "Men's Cuts", imageUrl: "https://placehold.co/100x100.png", bio: "Expert in modern and classic men's grooming. Precision cuts and sharp fades are my signature.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
+      { id: "st1", name: "Aminata", specialty: "Coloration", imageUrl: "https://placehold.co/100x100.png", bio: "Coloriste passionnée avec 10 ans d'expérience, spécialisée en balayage et transformations de couleurs vibrantes.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
+      { id: "st2", name: "Ousmane", specialty: "Coupes Homme", imageUrl: "https://placehold.co/100x100.png", bio: "Expert en soins pour hommes modernes et classiques. Coupes de précision et dégradés nets sont ma signature.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
     ],
   },
   {
     id: "2",
-    name: "Dakar Style Masters",
+    name: "Maîtres du Style de Dakar",
     location: "Plateau, Dakar",
-    status: "Open",
+    status: "Ouvert",
     imageUrl: "https://placehold.co/600x400.png",
     gallery: [
       "https://placehold.co/800x600.png",
@@ -73,22 +73,22 @@ export const salons: Salon[] = [
       "https://placehold.co/800x600.png",
     ],
     reviews: [
-      { id: "r3", author: "Awa Fall", rating: 5, comment: "The best braids in town!" },
+      { id: "r3", author: "Awa Fall", rating: 5, comment: "Les meilleures tresses en ville !" },
     ],
     services: [
-        { id: "s4", name: "Deep Conditioning Treatment", category: "Soins", price: 10000, duration: 60 },
-        { id: "s5", name: "Full Head Color", category: "Coloration", price: 25000, duration: 180 },
+        { id: "s4", name: "Soin Revitalisant Profond", category: "Soins", price: 10000, duration: 60 },
+        { id: "s5", name: "Coloration Tête Complète", category: "Coloration", price: 25000, duration: 180 },
     ],
     stylists: [
-        { id: "st3", name: "Khadija", specialty: "Braiding", imageUrl: "https://placehold.co/100x100.png", bio: "Master braider with a gentle touch. From intricate cornrows to elegant updos, I bring your vision to life.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
-        { id: "st4", name: "Ibrahim", specialty: "Styling", imageUrl: "https://placehold.co/100x100.png", bio: "Creative stylist who loves to craft unique and trendy looks for any occasion.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
+        { id: "st3", name: "Khadija", specialty: "Tresses", imageUrl: "https://placehold.co/100x100.png", bio: "Maîtresse tresseuse au toucher doux. Des nattes collées complexes aux chignons élégants, je donne vie à votre vision.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
+        { id: "st4", name: "Ibrahim", specialty: "Coiffage", imageUrl: "https://placehold.co/100x100.png", bio: "Styliste créatif qui adore créer des looks uniques et tendance pour toutes les occasions.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
     ],
   },
   {
     id: "3",
-    name: "Le Prestige Barber",
+    name: "Le Prestige Barbier",
     location: "Mermoz, Dakar",
-    status: "Closed",
+    status: "Fermé",
     imageUrl: "https://placehold.co/600x400.png",
     gallery: [
       "https://placehold.co/800x600.png",
@@ -96,21 +96,21 @@ export const salons: Salon[] = [
       "https://placehold.co/800x600.png",
     ],
     reviews: [
-      { id: "r4", author: "Cheikh Bamba", rating: 5, comment: "Perfect fade every time." },
+      { id: "r4", author: "Cheikh Bamba", rating: 5, comment: "Dégradé parfait à chaque fois." },
     ],
     services: [
-        { id: "s1", name: "Men's Haircut", category: "Coupes", price: 6000, duration: 45 },
-        { id: "s6", name: "Beard Trim", category: "Coupes", price: 3000, duration: 20 },
+        { id: "s1", name: "Coupe Homme", category: "Coupes", price: 6000, duration: 45 },
+        { id: "s6", name: "Taille de Barbe", category: "Barbe", price: 3000, duration: 20 },
     ],
     stylists: [
-        { id: "st5", name: "Moussa", specialty: "Barbering", imageUrl: "https://placehold.co/100x100.png", bio: "Dedicated barber focused on clean lines and a perfect finish. Your beard is in good hands.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
+        { id: "st5", name: "Moussa", specialty: "Barbier", imageUrl: "https://placehold.co/100x100.png", bio: "Barbier dévoué axé sur les lignes épurées et une finition parfaite. Votre barbe est entre de bonnes mains.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
     ],
   },
   {
     id: "4",
     name: "Femme Chic",
     location: "Fann, Dakar",
-    status: "Open",
+    status: "Ouvert",
     imageUrl: "https://placehold.co/600x400.png",
     gallery: [
       "https://placehold.co/800x600.png",
@@ -118,16 +118,16 @@ export const salons: Salon[] = [
       "https://placehold.co/800x600.png",
     ],
     reviews: [
-      { id: "r5", author: "Mariama Ba", rating: 4, comment: "Good service, but a bit pricey." },
-      { id: "r6", author: "Sophie Gomis", rating: 5, comment: "I love my new hairstyle! Thank you!" },
+      { id: "r5", author: "Mariama Ba", rating: 4, comment: "Bon service, mais un peu cher." },
+      { id: "r6", author: "Sophie Gomis", rating: 5, comment: "J'adore ma nouvelle coiffure ! Merci !" },
     ],
     services: [
-      { id: "s2", name: "Women's Cut & Style", category: "Coupes", price: 18000, duration: 90 },
-      { id: "s7", name: "Relaxer", category: "Défrisage", price: 12000, duration: 120 },
+      { id: "s2", name: "Coupe & Coiffage Femme", category: "Coupes", price: 18000, duration: 90 },
+      { id: "s7", name: "Défrisage", category: "Traitements", price: 12000, duration: 120 },
     ],
     stylists: [
-        { id: "st6", name: "Fatima", specialty: "Styling", imageUrl: "https://placehold.co/100x100.png", bio: "I believe in healthy hair first. Let's create a style that's not only beautiful but also sustainable.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
-        { id: "st7", name: "Ndeye", specialty: "Chemical Treatments", imageUrl: "https://placehold.co/100x100.png", bio: "Specializing in relaxers, perms, and treatments to manage and beautify all hair types.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
+        { id: "st6", name: "Fatima", specialty: "Coiffage", imageUrl: "https://placehold.co/100x100.png", bio: "Je crois d'abord aux cheveux sains. Créons un style qui n'est pas seulement beau, mais aussi durable.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
+        { id: "st7", name: "Ndeye", specialty: "Traitements Chimiques", imageUrl: "https://placehold.co/100x100.png", bio: "Spécialisée dans les défrisages, les permanentes et les soins pour gérer et embellir tous les types de cheveux.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
     ],
   },
 ];
@@ -141,13 +141,13 @@ export type Appointment = {
     serviceNames: string[];
     date: string;
     time: string;
-    status: 'Upcoming' | 'Completed' | 'Cancelled';
+    status: 'À venir' | 'Terminé' | 'Annulé';
     cost: number;
     duration: number; // in minutes
 }
 
 export const appointments: Appointment[] = [
-    { id: 'appt1', salonId: '1', salonName: 'Elegance Coiffure', stylistId: 'st1', stylistName: 'Aminata', serviceNames: ["Women's Cut & Style"], date: '2024-08-15', time: '14:00', status: 'Upcoming', cost: 15000, duration: 90 },
-    { id: 'appt2', salonId: '2', salonName: 'Dakar Style Masters', stylistId: 'st3', stylistName: 'Khadija', serviceNames: ['Braiding'], date: '2024-07-20', time: '10:00', status: 'Completed', cost: 20000, duration: 240 },
-    { id: 'appt3', salonId: '4', salonName: 'Femme Chic', serviceNames: ['Relaxer'], date: '2024-07-18', time: '11:30', status: 'Cancelled', cost: 12000, duration: 120 },
+    { id: 'appt1', salonId: '1', salonName: 'Élégance Coiffure', stylistId: 'st1', stylistName: 'Aminata', serviceNames: ["Coupe & Coiffage Femme"], date: '2024-08-15', time: '14:00', status: 'À venir', cost: 15000, duration: 90 },
+    { id: 'appt2', salonId: '2', salonName: 'Maîtres du Style de Dakar', stylistId: 'st3', stylistName: 'Khadija', serviceNames: ['Tresses'], date: '2024-07-20', time: '10:00', status: 'Terminé', cost: 20000, duration: 240 },
+    { id: 'appt3', salonId: '4', salonName: 'Femme Chic', serviceNames: ['Défrisage'], date: '2024-07-18', time: '11:30', status: 'Annulé', cost: 12000, duration: 120 },
 ]

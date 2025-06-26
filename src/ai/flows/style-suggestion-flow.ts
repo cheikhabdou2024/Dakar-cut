@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview AI flow for virtual hairstyle try-on.
@@ -47,7 +48,7 @@ const styleSuggestionFlow = ai.defineFlow(
       prompt: [
         {media: {url: input.userImage}},
         {
-          text: `Apply a '${input.hairstyle}' hairstyle to the person in this image. Maintain the person's facial features and background.`,
+          text: `Appliquez une coiffure '{hairstyle}' à la personne sur cette image. Conservez les traits du visage et l'arrière-plan de la personne.`,
         },
       ],
       config: {

@@ -1,3 +1,4 @@
+
 import { Scissors, Instagram, Facebook, Twitter } from "lucide-react";
 import Link from "next/link";
 
@@ -8,7 +9,7 @@ export function Footer() {
         <div className="flex items-center mb-4 md:mb-0">
           <Scissors className="h-6 w-6 text-primary mr-2" />
           <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} Dakar Hair Connect. All rights reserved.
+            &copy; {new Date().getFullYear()} Dakar Coiffure Connect. Tous droits réservés.
           </p>
         </div>
         <div className="flex items-center space-x-4">

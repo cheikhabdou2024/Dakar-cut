@@ -6,8 +6,8 @@ import { Footer } from '@/components/footer';
 import { BottomNavBar } from '@/components/bottom-navbar';
 
 export const metadata: Metadata = {
-  title: 'Dakar Hair Connect',
-  description: 'Find and book your next hair appointment in Dakar.',
+  title: 'Dakar Coiffure Connect',
+  description: 'Trouvez et réservez votre prochain rendez-vous coiffure à Dakar.',
 };
 
 export default function RootLayout({
@@ -16,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="fr" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

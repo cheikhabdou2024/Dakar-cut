@@ -101,10 +101,10 @@ export default function Home() {
     <div className="container mx-auto px-4 py-8">
       <header className="text-center mb-12">
         <h1 className="font-headline text-5xl md:text-6xl font-bold text-primary mb-2">
-          Dakar Hair Connect
+          Dakar Coiffure Connect
         </h1>
         <p className="text-lg text-muted-foreground">
-          Your style, your time. Find and book the best salons in Dakar.
+          Votre style, votre temps. Trouvez et réservez les meilleurs salons à Dakar.
         </p>
       </header>
 
@@ -112,7 +112,7 @@ export default function Home() {
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
-            placeholder="Search for a salon, service, or location..."
+            placeholder="Rechercher un salon, un service, ou un lieu..."
             className="pl-10 text-base"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -121,7 +121,7 @@ export default function Home() {
         <div className="flex flex-wrap items-center gap-4">
           <Button variant="secondary" disabled>
             <MapPin className="mr-2" />
-            Near me
+            Près de moi
           </Button>
           <Popover>
             <PopoverTrigger asChild>
@@ -133,9 +133,9 @@ export default function Home() {
             <PopoverContent className="w-80">
               <div className="grid gap-4">
                 <div className="space-y-2">
-                  <h4 className="font-medium leading-none">Filter by Service</h4>
+                  <h4 className="font-medium leading-none">Filtrer par Service</h4>
                   <p className="text-sm text-muted-foreground">
-                    Show salons that offer all selected services.
+                    Afficher les salons qui offrent tous les services sélectionnés.
                   </p>
                 </div>
                 <div className="grid gap-2 max-h-64 overflow-y-auto">
@@ -159,17 +159,17 @@ export default function Home() {
           </Popover>
            <Button variant={activeFilter === 'topRated' ? 'default' : 'secondary'} onClick={() => handleFilterClick('topRated')}>
             <Star className="mr-2" />
-            Top Rated
+            Mieux Notés
           </Button>
           <Button className="bg-accent text-accent-foreground hover:bg-accent/90 ml-auto">
-            Find Salons
+            Trouver des Salons
           </Button>
         </div>
       </div>
 
       <div>
         <h2 className="font-headline text-3xl font-semibold mb-6 text-primary">
-          {searchQuery || activeFilter || selectedServices.length > 0 ? `${filteredSalons.length} Results Found` : "Featured Salons"}
+          {searchQuery || activeFilter || selectedServices.length > 0 ? `${filteredSalons.length} Résultats Trouvés` : "Salons en Vedette"}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {filteredSalons.length > 0 ? (
@@ -178,7 +178,7 @@ export default function Home() {
             ))
           ) : (
             <p className="col-span-full text-center text-muted-foreground">
-              No salons found matching your criteria.
+              Aucun salon ne correspond à vos critères.
             </p>
           )}
         </div>
