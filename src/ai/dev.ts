@@ -4,3 +4,4 @@ import './flows/style-suggestion-flow';
 import './flows/hairstyle-inspiration-flow';
 import './flows/product-recommender-flow';
 import './flows/hairstyle-examples-flow';
+import './flows/salon-image-flow';

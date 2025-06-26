@@ -30,7 +30,8 @@ export type Salon = {
   name: string;
   location: string;
   status: 'Ouvert' | 'Fermé';
-  imageUrl: string;
+  imagePrompt: string;
+  imageUrl: string; // Will be populated by AI at runtime
   gallery: string[];
   reviews: Review[];
   services: Service[];
@@ -43,7 +44,8 @@ export const salons: Salon[] = [
     name: "Élégance Coiffure",
     location: "Almadies, Dakar",
     status: "Ouvert",
-    imageUrl: "https://placehold.co/600x400.png",
+    imagePrompt: "a bright, luxurious hair salon interior with marble floors, gold accents, and large mirrors",
+    imageUrl: "",
     gallery: [
       "https://placehold.co/800x600.png",
       "https://placehold.co/800x600.png",
@@ -70,7 +72,8 @@ export const salons: Salon[] = [
     name: "Maîtres du Style de Dakar",
     location: "Plateau, Dakar",
     status: "Ouvert",
-    imageUrl: "https://placehold.co/600x400.png",
+    imagePrompt: "a chic, urban salon with exposed brick walls, industrial-style lighting, and comfortable styling stations",
+    imageUrl: "",
     gallery: [
       "https://placehold.co/800x600.png",
       "https://placehold.co/800x600.png",
@@ -94,7 +97,8 @@ export const salons: Salon[] = [
     name: "Le Prestige Barbier",
     location: "Mermoz, Dakar",
     status: "Fermé",
-    imageUrl: "https://placehold.co/600x400.png",
+    imagePrompt: "a classic, old-school barbershop with vintage barber chairs, dark wood paneling, and checkered floors",
+    imageUrl: "",
     gallery: [
       "https://placehold.co/800x600.png",
       "https://placehold.co/800x600.png",
@@ -116,7 +120,8 @@ export const salons: Salon[] = [
     name: "Femme Chic",
     location: "Fann, Dakar",
     status: "Ouvert",
-    imageUrl: "https://placehold.co/600x400.png",
+    imagePrompt: "an elegant and feminine salon with pastel colors, plush velvet chairs, and floral decorations",
+    imageUrl: "",
     gallery: [
       "https://placehold.co/800x600.png",
       "https://placehold.co/800x600.png",
