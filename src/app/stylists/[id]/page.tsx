@@ -3,17 +3,28 @@
 
 import { useState } from 'react';
 import Image from "next/image";
-import { notFound, useRouter } from "next/navigation";
+import { notFound, useRouter, useParams } from "next/navigation";
 import { salons, type Stylist, type Salon } from "@/lib/placeholder-data";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Award, Scissors, ArrowLeft } from "lucide-react";
+import { Award, Scissors, ArrowLeft, Loader2 } from "lucide-react";
 import { BookingDialog } from '@/components/booking-dialog';
 
-export default function StylistPage({ params: { id } }: { params: { id: string } }) {
+export default function StylistPage() {
+  const params = useParams<{ id: string }>();
+  const id = params.id;
+
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const router = useRouter();
+
+  if (!id) {
+    return (
+      <div className="container mx-auto px-4 py-8 flex justify-center items-center min-h-[60vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   // Find the stylist and their salon
   let stylist: Stylist | undefined;
@@ -81,8 +92,9 @@ export default function StylistPage({ params: { id } }: { params: { id: string }
                             src={url} 
                             alt={`Image du portfolio ${index + 1} par ${stylist.name}`} 
                             fill
+                            style={{objectFit: 'cover'}}
                             data-ai-hint="hairstyle fashion"
-                            className="object-cover group-hover:scale-105 transition-transform duration-300"
+                            className="group-hover:scale-105 transition-transform duration-300"
                         />
                     </div>
                 ))}

@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 import { salons as initialSalons, type Salon } from "@/lib/placeholder-data";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,11 +17,15 @@ import { BookingDialog } from '@/components/booking-dialog';
 
 const SALONS_STORAGE_KEY = 'dakar-hair-connect-salons';
 
-export default function SalonPage({ params: { id } }: { params: { id: string } }) {
+export default function SalonPage() {
+  const params = useParams<{ id: string }>();
+  const id = params.id;
+
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [salon, setSalon] = useState<Salon | null | undefined>(undefined);
 
   useEffect(() => {
+    if (!id) return;
     try {
         const storedSalons = localStorage.getItem(SALONS_STORAGE_KEY);
         const allSalons = storedSalons ? JSON.parse(storedSalons) : initialSalons;
@@ -74,7 +78,7 @@ export default function SalonPage({ params: { id } }: { params: { id: string } }
               {salon.gallery.map((url, index) => (
                 <CarouselItem key={index}>
                   <div className="relative h-96">
-                    <Image src={url} alt={`Image de la galerie ${index + 1} pour ${salon.name}`} fill className="object-cover" data-ai-hint="salon interior design" />
+                    <Image src={url} alt={`Image de la galerie ${index + 1} pour ${salon.name}`} fill style={{objectFit: "cover"}} data-ai-hint="salon interior design" />
                   </div>
                 </CarouselItem>
               ))}
