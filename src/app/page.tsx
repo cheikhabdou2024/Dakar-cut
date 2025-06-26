@@ -10,17 +10,37 @@ import { Search, MapPin, Scissors, Star } from "lucide-react";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const [filteredSalons, setFilteredSalons] = useState<Salon[]>(allSalons);
 
   useEffect(() => {
-    const lowercasedQuery = searchQuery.toLowerCase();
-    const results = allSalons.filter(salon =>
-      salon.name.toLowerCase().includes(lowercasedQuery) ||
-      salon.location.toLowerCase().includes(lowercasedQuery) ||
-      salon.services.some(service => service.name.toLowerCase().includes(lowercasedQuery))
-    );
+    let results = allSalons;
+
+    // Filter by search query
+    if (searchQuery) {
+      const lowercasedQuery = searchQuery.toLowerCase();
+      results = results.filter(salon =>
+        salon.name.toLowerCase().includes(lowercasedQuery) ||
+        salon.location.toLowerCase().includes(lowercasedQuery) ||
+        salon.services.some(service => service.name.toLowerCase().includes(lowercasedQuery))
+      );
+    }
+    
+    // Apply sorting filters
+    if (activeFilter === 'topRated') {
+      results = [...results].sort((a, b) => {
+        const ratingA = a.reviews.length > 0 ? a.reviews.reduce((acc, r) => acc + r.rating, 0) / a.reviews.length : 0;
+        const ratingB = b.reviews.length > 0 ? b.reviews.reduce((acc, r) => acc + r.rating, 0) / b.reviews.length : 0;
+        return ratingB - ratingA;
+      });
+    }
+
     setFilteredSalons(results);
-  }, [searchQuery]);
+  }, [searchQuery, activeFilter]);
+  
+  const handleFilterClick = (filter: string) => {
+    setActiveFilter(prev => prev === filter ? null : filter);
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -44,15 +64,15 @@ export default function Home() {
           />
         </div>
         <div className="flex flex-wrap items-center gap-4">
-          <Button variant="secondary">
+          <Button variant="secondary" disabled>
             <MapPin className="mr-2" />
             Near me
           </Button>
-          <Button variant="secondary">
+          <Button variant="secondary" disabled>
             <Scissors className="mr-2" />
             Services
           </Button>
-           <Button variant="secondary">
+           <Button variant={activeFilter === 'topRated' ? 'default' : 'secondary'} onClick={() => handleFilterClick('topRated')}>
             <Star className="mr-2" />
             Top Rated
           </Button>
@@ -64,7 +84,7 @@ export default function Home() {
 
       <div>
         <h2 className="font-headline text-3xl font-semibold mb-6 text-primary">
-          {searchQuery ? `${filteredSalons.length} Results Found` : "Featured Salons"}
+          {searchQuery || activeFilter ? `${filteredSalons.length} Results Found` : "Featured Salons"}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {filteredSalons.length > 0 ? (
@@ -73,7 +93,7 @@ export default function Home() {
             ))
           ) : (
             <p className="col-span-full text-center text-muted-foreground">
-              No salons found matching your search.
+              No salons found matching your criteria.
             </p>
           )}
         </div>
