@@ -46,8 +46,15 @@ export default function DashboardPage() {
 
     useEffect(() => {
         try {
-            const storedAppointments = localStorage.getItem(APPOINTMENTS_STORAGE_KEY);
-            const loadedAppointments: Appointment[] = storedAppointments ? JSON.parse(storedAppointments) : initialAppointments;
+            const storedAppointmentsRaw = localStorage.getItem(APPOINTMENTS_STORAGE_KEY);
+            let loadedAppointments: Appointment[];
+
+            if (storedAppointmentsRaw) {
+                loadedAppointments = JSON.parse(storedAppointmentsRaw);
+            } else {
+                loadedAppointments = initialAppointments;
+                localStorage.setItem(APPOINTMENTS_STORAGE_KEY, JSON.stringify(initialAppointments));
+            }
 
             const today = new Date();
             const yesterday = subDays(today, 1);
@@ -302,4 +309,3 @@ export default function DashboardPage() {
         </div>
     );
 }
-

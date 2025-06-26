@@ -1,4 +1,6 @@
 
+import { subDays, addDays, startOfWeek } from 'date-fns';
+
 export type Review = {
   id: string;
   author: string;
@@ -149,29 +151,32 @@ export type Appointment = {
     duration: number; // in minutes
 }
 
+const today = new Date();
+const toDateString = (date: Date): string => date.toISOString().split('T')[0];
 
-// NOTE: The dates are hardcoded relative to a hypothetical 'today' of 2024-08-20.
-// The dashboard logic will correctly interpret these dates against the *actual* today.
+const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 });
+const startOfLastWeek = startOfWeek(subDays(today, 7), { weekStartsOn: 1 });
+
 export const appointments: Appointment[] = [
     // Today
-    { "id": "appt-today-1", "salonId": "1", "salonName": "Élégance Coiffure", "stylistId": "st1", "stylistName": "Aminata", "serviceNames": ["Coupe & Coiffage Femme"], "date": "2024-08-20", "time": "10:00", "status": "Terminé", "cost": 15000, "duration": 90 },
-    { "id": "appt-today-2", "salonId": "2", "salonName": "Maîtres du Style de Dakar", "serviceNames": ["Soin Revitalisant Profond"], "date": "2024-08-20", "time": "11:00", "status": "Terminé", "cost": 10000, "duration": 60 },
-    { "id": "appt-today-3", "salonId": "1", "salonName": "Élégance Coiffure", "stylistId": "st2", "stylistName": "Ousmane", "serviceNames": ["Coupe Homme"], "date": "2024-08-20", "time": "14:30", "status": "À venir", "cost": 5000, "duration": 30 },
+    { "id": "appt-today-1", "salonId": "1", "salonName": "Élégance Coiffure", "stylistId": "st1", "stylistName": "Aminata", "serviceNames": ["Coupe & Coiffage Femme"], "date": toDateString(today), "time": "10:00", "status": "Terminé", "cost": 15000, "duration": 90 },
+    { "id": "appt-today-2", "salonId": "2", "salonName": "Maîtres du Style de Dakar", "serviceNames": ["Soin Revitalisant Profond"], "date": toDateString(today), "time": "11:00", "status": "Terminé", "cost": 10000, "duration": 60 },
+    { "id": "appt-today-3", "salonId": "1", "salonName": "Élégance Coiffure", "stylistId": "st2", "stylistName": "Ousmane", "serviceNames": ["Coupe Homme"], "date": toDateString(today), "time": "14:30", "status": "À venir", "cost": 5000, "duration": 30 },
     // Yesterday
-    { "id": "appt-yest-1", "salonId": "4", "salonName": "Femme Chic", "stylistId": "st6", "stylistName": "Fatima", "serviceNames": ["Défrisage"], "date": "2024-08-19", "time": "09:00", "status": "Terminé", "cost": 12000, "duration": 120 },
-    { "id": "appt-yest-2", "salonId": "1", "salonName": "Élégance Coiffure", "serviceNames": ["Coupe Homme"], "date": "2024-08-19", "time": "15:00", "status": "Terminé", "cost": 5000, "duration": 30 },
-    { "id": "appt-yest-3", "salonId": "2", "salonName": "Maîtres du Style de Dakar", "serviceNames": ["Coloration Tête Complète"], "date": "2024-08-19", "time": "14:00", "status": "Annulé", "cost": 25000, "duration": 180 },
-    // This week (past)
-    { "id": "appt-thisweek-1", "salonId": "1", "salonName": "Élégance Coiffure", "serviceNames": ["Tresses"], "date": "2024-08-18", "time": "10:00", "status": "Terminé", "cost": 20000, "duration": 240 },
+    { "id": "appt-yest-1", "salonId": "4", "salonName": "Femme Chic", "stylistId": "st6", "stylistName": "Fatima", "serviceNames": ["Défrisage"], "date": toDateString(subDays(today, 1)), "time": "09:00", "status": "Terminé", "cost": 12000, "duration": 120 },
+    { "id": "appt-yest-2", "salonId": "1", "salonName": "Élégance Coiffure", "serviceNames": ["Coupe Homme"], "date": toDateString(subDays(today, 1)), "time": "15:00", "status": "Terminé", "cost": 5000, "duration": 30 },
+    { "id": "appt-yest-3", "salonId": "2", "salonName": "Maîtres du Style de Dakar", "serviceNames": ["Coloration Tête Complète"], "date": toDateString(subDays(today, 1)), "time": "14:00", "status": "Annulé", "cost": 25000, "duration": 180 },
+    // This week (past, relative to start of week)
+    { "id": "appt-thisweek-1", "salonId": "1", "salonName": "Élégance Coiffure", "serviceNames": ["Tresses"], "date": toDateString(startOfThisWeek), "time": "10:00", "status": "Terminé", "cost": 20000, "duration": 240 },
     // This week (future)
-    { "id": "appt-thisweek-2", "salonId": "3", "salonName": "Le Prestige Barbier", "stylistId": "st5", "stylistName": "Moussa", "serviceNames": ["Taille de Barbe", "Coupe Homme"], "date": "2024-08-21", "time": "16:00", "status": "À venir", "cost": 9000, "duration": 65 },
-    { "id": "appt-thisweek-3", "salonId": "2", "salonName": "Maîtres du Style de Dakar", "stylistId": "st3", "stylistName": "Khadija", "serviceNames": ["Tresses"], "date": "2024-08-22", "time": "09:30", "status": "À venir", "cost": 20000, "duration": 240 },
+    { "id": "appt-thisweek-2", "salonId": "3", "salonName": "Le Prestige Barbier", "stylistId": "st5", "stylistName": "Moussa", "serviceNames": ["Taille de Barbe", "Coupe Homme"], "date": toDateString(addDays(today, 1)), "time": "16:00", "status": "À venir", "cost": 9000, "duration": 65 },
+    { "id": "appt-thisweek-3", "salonId": "2", "salonName": "Maîtres du Style de Dakar", "stylistId": "st3", "stylistName": "Khadija", "serviceNames": ["Tresses"], "date": toDateString(addDays(today, 2)), "time": "09:30", "status": "À venir", "cost": 20000, "duration": 240 },
      // Last week
-    { "id": "appt-lastweek-1", "salonId": "1", "salonName": "Élégance Coiffure", "stylistId": "st1", "stylistName": "Aminata", "serviceNames": ["Coloration Tête Complète"], "date": "2024-08-13", "time": "14:00", "status": "Terminé", "cost": 25000, "duration": 180 },
-    { "id": "appt-lastweek-2", "salonId": "4", "salonName": "Femme Chic", "serviceNames": ["Coupe & Coiffage Femme"], "date": "2024-08-12", "time": "11:30", "status": "Terminé", "cost": 18000, "duration": 90 },
-    { "id": "appt-lastweek-3", "salonId": "2", "salonName": "Maîtres du Style de Dakar", "serviceNames": ["Soin Revitalisant Profond", "Coupe & Coiffage Femme"], "date": "2024-08-14", "time": "15:30", "status": "Terminé", "cost": 25000, "duration": 150 },
-    { "id": "appt-lastweek-4", "salonId": "1", "salonName": "Élégance Coiffure", "serviceNames": ["Coupe Homme"], "date": "2024-08-15", "time": "09:00", "status": "Terminé", "cost": 5000, "duration": 30 },
+    { "id": "appt-lastweek-1", "salonId": "1", "salonName": "Élégance Coiffure", "stylistId": "st1", "stylistName": "Aminata", "serviceNames": ["Coloration Tête Complète"], "date": toDateString(addDays(startOfLastWeek, 1)), "time": "14:00", "status": "Terminé", "cost": 25000, "duration": 180 },
+    { "id": "appt-lastweek-2", "salonId": "4", "salonName": "Femme Chic", "serviceNames": ["Coupe & Coiffage Femme"], "date": toDateString(addDays(startOfLastWeek, 2)), "time": "11:30", "status": "Terminé", "cost": 18000, "duration": 90 },
+    { "id": "appt-lastweek-3", "salonId": "2", "salonName": "Maîtres du Style de Dakar", "serviceNames": ["Soin Revitalisant Profond", "Coupe & Coiffage Femme"], "date": toDateString(addDays(startOfLastWeek, 3)), "time": "15:30", "status": "Terminé", "cost": 25000, "duration": 150 },
+    { "id": "appt-lastweek-4", "salonId": "1", "salonName": "Élégance Coiffure", "serviceNames": ["Coupe Homme"], "date": toDateString(addDays(startOfLastWeek, 4)), "time": "09:00", "status": "Terminé", "cost": 5000, "duration": 30 },
     // Other past appointments
-    { "id": 'appt2', salonId: '2', salonName: 'Maîtres du Style de Dakar', stylistId: 'st3', stylistName: 'Khadija', serviceNames: ['Tresses'], date: '2024-07-20', time: '10:00', status: 'Terminé', cost: 20000, duration: 240 },
-    { "id": 'appt3', salonId: '4', salonName: 'Femme Chic', serviceNames: ['Défrisage'], date: '2024-07-18', time: '11:30', "status": "Annulé", "cost": 12000, duration: 120 },
+    { "id": 'appt2', salonId: '2', salonName: 'Maîtres du Style de Dakar', stylistId: 'st3', stylistName: 'Khadija', serviceNames: ['Tresses'], date: toDateString(subDays(today, 30)), time: '10:00', status: 'Terminé', cost: 20000, duration: 240 },
+    { "id": 'appt3', salonId: '4', salonName: 'Femme Chic', serviceNames: ['Défrisage'], date: toDateString(subDays(today, 32)), time: '11:30', "status": "Annulé", "cost": 12000, duration: 120 },
 ];
