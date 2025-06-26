@@ -4,13 +4,14 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { DollarSign, Users, Calendar, Clock, Loader2, TrendingUp } from "lucide-react";
+import { DollarSign, Users, Calendar, Clock, Loader2, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { appointments as initialAppointments, type Appointment } from "@/lib/placeholder-data";
 import { format, eachDayOfInterval, startOfWeek, endOfWeek, isSameDay, subDays, parseISO, getDay, subWeeks } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { Progress } from "@/components/ui/progress";
+import { cn } from "@/lib/utils";
 
 const APPOINTMENTS_STORAGE_KEY = 'dakar-hair-connect-appointments';
 
@@ -25,14 +26,20 @@ const getStartOfWeek = (date: Date) => {
     return startOfWeek(date, { weekStartsOn: 1 }); // Lundi
 }
 
+const ChangeIndicator = ({ change }: { change: number }) => {
+    if (change > 0) return <TrendingUp className="h-4 w-4 text-green-500" />;
+    if (change < 0) return <TrendingDown className="h-4 w-4 text-red-500" />;
+    return <Minus className="h-4 w-4 text-muted-foreground" />;
+};
+
 export default function DashboardPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [schedule, setSchedule] = useState<Record<string, Record<string, string>>>({});
     const [kpis, setKpis] = useState([
-        { title: "Revenus d'Aujourd'hui", value: "...", icon: DollarSign, change: "Chargement..." },
-        { title: "Réservations d'Aujourd'hui", value: "...", icon: Calendar, change: "Chargement..." },
-        { title: "Taux d'Occupation Hebdomadaire", value: "...", icon: Users, change: "Chargement..." },
-        { title: "Temps de Service Moyen", value: "...", icon: Clock, change: "Chargement..." },
+        { title: "Revenus d'Aujourd'hui", value: "...", icon: DollarSign, change: "Chargement...", changeValue: 0 },
+        { title: "Réservations d'Aujourd'hui", value: "...", icon: Calendar, change: "Chargement...", changeValue: 0 },
+        { title: "Taux d'Occupation Hebdo", value: "...", icon: Users, change: "Chargement...", changeValue: 0 },
+        { title: "Temps de Service Moyen", value: "...", icon: Clock, change: "Chargement...", changeValue: 0 },
     ]);
     const [chartData, setChartData] = useState<{ day: string; revenue: number }[]>([]);
     const [popularServices, setPopularServices] = useState<{ name: string; count: number }[]>([]);
@@ -43,49 +50,78 @@ export default function DashboardPage() {
             const loadedAppointments: Appointment[] = storedAppointments ? JSON.parse(storedAppointments) : initialAppointments;
 
             const today = new Date();
+            const yesterday = subDays(today, 1);
             
-            // --- KPI Calculations ---
-            const todaysAppointments = loadedAppointments.filter((a) => isSameDay(parseISO(a.date), today) && a.status !== 'Annulé');
-            const todaysCompletedAppointments = todaysAppointments.filter((a) => a.status === 'Terminé');
-            const todaysRevenue = todaysCompletedAppointments.reduce((sum, a) => sum + a.cost, 0);
+            // --- Comparative KPI Calculations ---
+            const formatPercentageChange = (current: number, previous: number) => {
+                if (previous === 0) {
+                    return current > 0 ? `En hausse par rapport à 0` : `Aucun changement`;
+                }
+                const percentage = ((current - previous) / previous) * 100;
+                if (Math.abs(percentage) < 0.1) return `Aucun changement`;
+                return `${percentage > 0 ? '+' : ''}${percentage.toFixed(0)}% par rapport à hier`;
+            };
+            
+            const formatAbsoluteChange = (current: number, previous: number, unit: string, period: string) => {
+                 const change = current - previous;
+                 if (change === 0) return `Aucun changement par rapport à ${period}`;
+                 return `${change > 0 ? '+' : ''}${change.toFixed(0)}${unit} par rapport à ${period}`;
+            }
 
-            const allCompletedAppointments = loadedAppointments.filter(a => a.status === 'Terminé');
-            const totalServiceMinutes = allCompletedAppointments.reduce((sum, a) => sum + a.duration, 0);
-            const avgServiceTime = allCompletedAppointments.length > 0 
-                ? Math.round(totalServiceMinutes / allCompletedAppointments.length) 
-                : 0;
-            
-            // Occupancy Rate Calculation
+            // 1. Daily Revenue
+            const todaysCompletedAppointments = loadedAppointments.filter((a) => isSameDay(parseISO(a.date), today) && a.status === 'Terminé');
+            const todaysRevenue = todaysCompletedAppointments.reduce((sum, a) => sum + a.cost, 0);
+            const yesterdaysCompletedAppointments = loadedAppointments.filter((a) => isSameDay(parseISO(a.date), yesterday) && a.status === 'Terminé');
+            const yesterdaysRevenue = yesterdaysCompletedAppointments.reduce((sum, a) => sum + a.cost, 0);
+            const revenueChange = todaysRevenue - yesterdaysRevenue;
+            const revenueChangeText = formatPercentageChange(todaysRevenue, yesterdaysRevenue);
+
+            // 2. Daily Bookings
+            const todaysAppointments = loadedAppointments.filter((a) => isSameDay(parseISO(a.date), today) && a.status !== 'Annulé');
+            const yesterdaysAppointments = loadedAppointments.filter((a) => isSameDay(parseISO(a.date), yesterday) && a.status !== 'Annulé');
+            const bookingsChange = todaysAppointments.length - yesterdaysAppointments.length;
+            const bookingsChangeText = formatAbsoluteChange(todaysAppointments.length, yesterdaysAppointments.length, '', 'hier');
+
+            // 3. Weekly Occupancy & Service Time
             const startOfThisWeek = getStartOfWeek(today);
             const endOfThisWeek = endOfWeek(today, { weekStartsOn: 1 });
             const startOfLastWeek = subWeeks(startOfThisWeek, 1);
             const endOfLastWeek = subWeeks(endOfThisWeek, 1);
-            
-            const totalAvailableMinutesPerWeek = 6 * 6 * 60; // 6 jours/semaine, 6 heures/jour (9-12, 14-17)
 
             const appointmentsThisWeek = loadedAppointments.filter(a => {
                 const apptDate = parseISO(a.date);
                 return a.status !== 'Annulé' && apptDate >= startOfThisWeek && apptDate <= endOfThisWeek;
             });
-            const bookedMinutesThisWeek = appointmentsThisWeek.reduce((sum, a) => sum + a.duration, 0);
-            const occupancyThisWeek = totalAvailableMinutesPerWeek > 0 ? (bookedMinutesThisWeek / totalAvailableMinutesPerWeek) * 100 : 0;
-
             const appointmentsLastWeek = loadedAppointments.filter(a => {
                 const apptDate = parseISO(a.date);
                 return a.status !== 'Annulé' && apptDate >= startOfLastWeek && apptDate <= endOfLastWeek;
             });
+
+            // Occupancy Rate
+            const totalAvailableMinutesPerWeek = 6 * 6 * 60; // 6 jours/semaine, 6 heures/jour (9-12, 14-17)
+            const bookedMinutesThisWeek = appointmentsThisWeek.reduce((sum, a) => sum + a.duration, 0);
+            const occupancyThisWeek = totalAvailableMinutesPerWeek > 0 ? (bookedMinutesThisWeek / totalAvailableMinutesPerWeek) * 100 : 0;
             const bookedMinutesLastWeek = appointmentsLastWeek.reduce((sum, a) => sum + a.duration, 0);
             const occupancyLastWeek = totalAvailableMinutesPerWeek > 0 ? (bookedMinutesLastWeek / totalAvailableMinutesPerWeek) * 100 : 0;
             const occupancyChange = occupancyThisWeek - occupancyLastWeek;
-            const occupancyChangeText = occupancyLastWeek === 0 && occupancyThisWeek > 0 
-                ? 'En hausse par rapport à 0% la semaine dernière' 
-                : (occupancyChange === 0 ? "pas de changement" : `${occupancyChange > 0 ? '+' : ''}${occupancyChange.toFixed(0)}% par rapport à la semaine dernière`);
+            const occupancyChangeText = formatAbsoluteChange(occupancyThisWeek, occupancyLastWeek, '%', 'la semaine dernière');
+            
+            // Average Service Time
+            const completedThisWeek = appointmentsThisWeek.filter(a => a.status === 'Terminé');
+            const totalMinutesThisWeek = completedThisWeek.reduce((sum, a) => sum + a.duration, 0);
+            const avgTimeThisWeek = completedThisWeek.length > 0 ? Math.round(totalMinutesThisWeek / completedThisWeek.length) : 0;
+            
+            const completedLastWeek = appointmentsLastWeek.filter(a => a.status === 'Terminé');
+            const totalMinutesLastWeek = completedLastWeek.reduce((sum, a) => sum + a.duration, 0);
+            const avgTimeLastWeek = completedLastWeek.length > 0 ? Math.round(totalMinutesLastWeek / completedLastWeek.length) : 0;
+            const avgTimeChange = avgTimeThisWeek - avgTimeLastWeek;
+            const avgTimeChangeText = formatAbsoluteChange(avgTimeThisWeek, avgTimeLastWeek, ' min', 'la semaine dernière');
 
             setKpis([
-                { title: "Revenus d'Aujourd'hui", value: `${todaysRevenue.toLocaleString('fr-FR')} FCFA`, icon: DollarSign, change: `sur ${todaysCompletedAppointments.length} réservations terminées` },
-                { title: "Réservations d'Aujourd'hui", value: todaysAppointments.length.toString(), icon: Calendar, change: `total pour aujourd'hui` },
-                { title: "Taux d'Occupation Hebdomadaire", value: `${occupancyThisWeek.toFixed(0)}%`, icon: Users, change: occupancyChangeText },
-                { title: "Temps de Service Moyen", value: `${avgServiceTime} min`, icon: Clock, change: `moy. sur ${allCompletedAppointments.length} services` },
+                { title: "Revenus d'Aujourd'hui", value: `${todaysRevenue.toLocaleString('fr-FR')} FCFA`, icon: DollarSign, change: revenueChangeText, changeValue: revenueChange },
+                { title: "Réservations d'Aujourd'hui", value: todaysAppointments.length.toString(), icon: Calendar, change: bookingsChangeText, changeValue: bookingsChange },
+                { title: "Taux d'Occupation Hebdo", value: `${occupancyThisWeek.toFixed(0)}%`, icon: Users, change: occupancyChangeText, changeValue: occupancyChange },
+                { title: "Temps de Service Moyen", value: `${avgTimeThisWeek} min`, icon: Clock, change: avgTimeChangeText, changeValue: avgTimeChange },
             ]);
 
             // --- Weekly Revenue Chart ---
@@ -99,6 +135,7 @@ export default function DashboardPage() {
             setChartData(weeklyChartData);
 
             // --- Popular Services ---
+            const allCompletedAppointments = loadedAppointments.filter(a => a.status === 'Terminé');
             const serviceCounts: Record<string, number> = {};
             allCompletedAppointments.forEach(appt => {
               appt.serviceNames.forEach(serviceName => {
@@ -167,7 +204,10 @@ export default function DashboardPage() {
                 </CardHeader>
                 <CardContent>
                 <div className="text-2xl font-bold">{kpi.value}</div>
-                <p className="text-xs text-muted-foreground">{kpi.change}</p>
+                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                    <ChangeIndicator change={kpi.changeValue} />
+                    <span>{kpi.change}</span>
+                </p>
                 </CardContent>
             </Card>
             ))}
@@ -262,3 +302,4 @@ export default function DashboardPage() {
         </div>
     );
 }
+
