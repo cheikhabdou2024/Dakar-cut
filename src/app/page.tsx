@@ -7,6 +7,9 @@ import { Button } from "@/components/ui/button";
 import { SalonCard } from "@/components/salon-card";
 import { salons as initialSalons, type Salon } from "@/lib/placeholder-data";
 import { Search, MapPin, Scissors, Star, Loader2 } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 const SALONS_STORAGE_KEY = 'dakar-hair-connect-salons';
 
@@ -16,20 +19,35 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const [filteredSalons, setFilteredSalons] = useState<Salon[]>([]);
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [allServices, setAllServices] = useState<string[]>([]);
 
   useEffect(() => {
+    let loadedSalons: Salon[];
     try {
       const storedSalons = localStorage.getItem(SALONS_STORAGE_KEY);
       if (storedSalons) {
-        setSalons(JSON.parse(storedSalons));
+        loadedSalons = JSON.parse(storedSalons);
+        setSalons(loadedSalons);
       } else {
+        loadedSalons = initialSalons;
         setSalons(initialSalons);
         localStorage.setItem(SALONS_STORAGE_KEY, JSON.stringify(initialSalons));
       }
     } catch (error) {
         console.error("Failed to load salons from localStorage", error);
+        loadedSalons = initialSalons;
         setSalons(initialSalons);
     }
+
+    const serviceSet = new Set<string>();
+    loadedSalons.forEach(salon => {
+      salon.services.forEach(service => {
+        serviceSet.add(service.name);
+      });
+    });
+    setAllServices(Array.from(serviceSet).sort());
+
     setIsLoading(false);
   }, []);
 
@@ -46,6 +64,15 @@ export default function Home() {
       );
     }
     
+    // Filter by selected services
+    if (selectedServices.length > 0) {
+        results = results.filter(salon => 
+            selectedServices.every(selectedService => 
+                salon.services.some(salonService => salonService.name === selectedService)
+            )
+        );
+    }
+
     // Apply sorting filters
     if (activeFilter === 'topRated') {
       results = [...results].sort((a, b) => {
@@ -56,7 +83,7 @@ export default function Home() {
     }
 
     setFilteredSalons(results);
-  }, [searchQuery, activeFilter, salons]);
+  }, [searchQuery, activeFilter, salons, selectedServices]);
   
   const handleFilterClick = (filter: string) => {
     setActiveFilter(prev => prev === filter ? null : filter);
@@ -96,10 +123,40 @@ export default function Home() {
             <MapPin className="mr-2" />
             Near me
           </Button>
-          <Button variant="secondary" disabled>
-            <Scissors className="mr-2" />
-            Services
-          </Button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="secondary">
+                <Scissors className="mr-2" />
+                Services {selectedServices.length > 0 && `(${selectedServices.length})`}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80">
+              <div className="grid gap-4">
+                <div className="space-y-2">
+                  <h4 className="font-medium leading-none">Filter by Service</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Show salons that offer all selected services.
+                  </p>
+                </div>
+                <div className="grid gap-2 max-h-64 overflow-y-auto">
+                  {allServices.map(service => (
+                    <div key={service} className="flex items-center space-x-2">
+                      <Checkbox 
+                        id={service}
+                        checked={selectedServices.includes(service)}
+                        onCheckedChange={(checked) => {
+                          return checked
+                            ? setSelectedServices(prev => [...prev, service])
+                            : setSelectedServices(prev => prev.filter(s => s !== service));
+                        }}
+                      />
+                      <Label htmlFor={service} className="font-normal cursor-pointer">{service}</Label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
            <Button variant={activeFilter === 'topRated' ? 'default' : 'secondary'} onClick={() => handleFilterClick('topRated')}>
             <Star className="mr-2" />
             Top Rated
@@ -112,7 +169,7 @@ export default function Home() {
 
       <div>
         <h2 className="font-headline text-3xl font-semibold mb-6 text-primary">
-          {searchQuery || activeFilter ? `${filteredSalons.length} Results Found` : "Featured Salons"}
+          {searchQuery || activeFilter || selectedServices.length > 0 ? `${filteredSalons.length} Results Found` : "Featured Salons"}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {filteredSalons.length > 0 ? (
