@@ -1,6 +1,29 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+"use client"
+
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DollarSign, Users, Calendar, Clock } from "lucide-react";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
+
+const chartData = [
+    { day: "Mon", revenue: 55000 },
+    { day: "Tue", revenue: 62000 },
+    { day: "Wed", revenue: 78000 },
+    { day: "Thu", revenue: 71000 },
+    { day: "Fri", revenue: 95000 },
+    { day: "Sat", revenue: 120000 },
+    { day: "Sun", revenue: 30000 },
+];
+
+const chartConfig = {
+  revenue: {
+    label: "Revenue (FCFA)",
+    color: "hsl(var(--primary))",
+  },
+} satisfies ChartConfig;
+
 
 export default function DashboardPage() {
   const kpis = [
@@ -42,37 +65,67 @@ export default function DashboardPage() {
           </Card>
         ))}
       </div>
-
-      <div>
-        <h2 className="font-headline text-3xl font-semibold mb-6 text-primary">
-          This Week's Schedule
-        </h2>
+      
+      <div className="grid gap-8">
         <Card>
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead className="w-[100px]">Time</TableHead>
-                        {days.map(day => <TableHead key={day}>{day}</TableHead>)}
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {Object.entries(schedule).map(([time, bookings]) => (
-                        <TableRow key={time}>
-                            <TableCell className="font-medium">{time}</TableCell>
-                            {days.map(day => (
-                                <TableCell key={day}>
-                                    {bookings[day as keyof typeof bookings] && (
-                                        <div className={`p-2 rounded-md text-xs text-center ${bookings[day as keyof typeof bookings] === "Full" ? 'bg-red-100 text-red-800' : bookings[day as keyof typeof bookings] === "Break" ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}`}>
-                                            {bookings[day as keyof typeof bookings]}
-                                        </div>
-                                    )}
-                                </TableCell>
-                            ))}
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
+            <CardHeader>
+            <CardTitle className="font-headline text-3xl text-primary">Weekly Revenue</CardTitle>
+            <CardDescription>Revenue overview for the last 7 days.</CardDescription>
+            </CardHeader>
+            <CardContent>
+            <ChartContainer config={chartConfig} className="h-[250px] w-full">
+                <BarChart data={chartData} accessibilityLayer>
+                    <CartesianGrid vertical={false} />
+                    <XAxis
+                        dataKey="day"
+                        tickLine={false}
+                        tickMargin={10}
+                        axisLine={false}
+                    />
+                        <YAxis
+                        tickLine={false}
+                        axisLine={false}
+                        tickMargin={10}
+                        tickFormatter={(value) => `${Number(value) / 1000}k`}
+                        />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Bar dataKey="revenue" fill="var(--color-revenue)" radius={4} />
+                </BarChart>
+            </ChartContainer>
+            </CardContent>
         </Card>
+
+        <div>
+            <h2 className="font-headline text-3xl font-semibold mb-6 text-primary">
+            This Week's Schedule
+            </h2>
+            <Card>
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead className="w-[100px]">Time</TableHead>
+                            {days.map(day => <TableHead key={day}>{day}</TableHead>)}
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {Object.entries(schedule).map(([time, bookings]) => (
+                            <TableRow key={time}>
+                                <TableCell className="font-medium">{time}</TableCell>
+                                {days.map(day => (
+                                    <TableCell key={day}>
+                                        {bookings[day as keyof typeof bookings] && (
+                                            <div className={`p-2 rounded-md text-xs text-center ${bookings[day as keyof typeof bookings] === "Full" ? 'bg-red-100 text-red-800' : bookings[day as keyof typeof bookings] === "Break" ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}`}>
+                                                {bookings[day as keyof typeof bookings]}
+                                            </div>
+                                        )}
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </Card>
+        </div>
       </div>
     </div>
   );
