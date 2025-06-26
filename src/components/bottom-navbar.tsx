@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Calendar, Wand2, Sparkles } from "lucide-react";
+import { Home, Calendar, Wand2, Sparkles, LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -11,6 +11,7 @@ const navItems = [
   { href: "/appointments", label: "Réservations", icon: Calendar },
   { href: "/style-ai", label: "IA Coiffure", icon: Wand2 },
   { href: "/inspiration", label: "Inspiration", icon: Sparkles },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
 ];
 
 export function BottomNavBar() {
