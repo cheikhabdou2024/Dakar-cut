@@ -54,8 +54,8 @@ export function SalonCard({ salon }: SalonCardProps) {
         }
       } catch (error) {
         console.error(`Failed to generate image for ${salon.name}:`, error);
-        // Fallback to placeholder if generation fails
-        if (isMounted) setImageUrl("https://placehold.co/600x400.png");
+        // Fallback to default salon image if generation fails
+        if (isMounted) setImageUrl("/assets/images/salons/default-salon.jpg");
       } finally {
         if (isMounted) setIsLoading(false);
       }

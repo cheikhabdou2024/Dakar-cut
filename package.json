@@ -9,7 +9,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "download-images": "node scripts/download-sample-images.js",
+    "download-onboarding-images": "node scripts/download-onboarding-images.js"
   },
   "dependencies": {
     "@genkit-ai/googleai": "^1.13.0",

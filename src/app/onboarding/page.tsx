@@ -10,28 +10,28 @@ import { cn } from '@/lib/utils';
 const onboardingSteps = [
   {
     icon: MapPin,
-    image: 'https://placehold.co/800x800.png',
+    image: '/assets/images/salons/default-salon.jpg',
     imageHint: 'map search results',
     title: 'Trouvez les meilleurs salons',
     description: 'Explorez une sélection de salons de coiffure et barbiers près de chez vous. Lisez les avis et trouvez votre perle rare.',
   },
   {
     icon: Wand2,
-    image: 'https://placehold.co/800x800.png',
-    imageHint: 'woman hairstyle before after',
+    image: '/assets/images/stylists/default-portfolio.jpg',
+    imageHint: 'man hairstyle before after',
     title: 'Essayez un nouveau look avec l\'IA',
     description: 'Téléchargez votre photo et laissez notre intelligence artificielle vous montrer à quoi vous ressembleriez avec une nouvelle coiffure.',
   },
   {
     icon: CalendarCheck,
-    image: 'https://placehold.co/800x800.png',
+    image: '/assets/images/salons/default-salon1.jpg',
     imageHint: 'salon interior',
     title: 'Réservez facilement en ligne',
     description: 'Choisissez votre service, votre styliste et votre créneau horaire. Confirmez votre rendez-vous en quelques clics, 24h/24 et 7j/7.',
   },
   {
     icon: Sparkles,
-    image: 'https://placehold.co/800x800.png',
+    image: '/assets/images/stylists/default-stylist.jpg',
     imageHint: 'hair products bottles',
     title: 'Obtenez des conseils personnalisés',
     description: 'Notre IA analyse votre type de cheveux et vos objectifs pour vous recommander les produits parfaits pour votre routine capillaire.',

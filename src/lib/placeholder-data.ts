@@ -47,9 +47,9 @@ export const salons: Salon[] = [
     imagePrompt: "a bright, luxurious hair salon interior with marble floors, gold accents, and large mirrors",
     imageUrl: "",
     gallery: [
-      "https://placehold.co/800x600.png",
-      "https://placehold.co/800x600.png",
-      "https://placehold.co/800x600.png",
+      "/assets/images/salons/elegance-coiffure-1.jpg",
+      "/assets/images/salons/elegance-coiffure-2.jpg",
+      "/assets/images/salons/elegance-coiffure-3.jpg",
     ],
     reviews: [
       { id: "r1", author: "Fatou Diop", rating: 5, comment: "Service incroyable ! Mes cheveux n'ont jamais été aussi beaux." },
@@ -63,8 +63,8 @@ export const salons: Salon[] = [
       { id: "s4", name: "Soin Revitalisant Profond", category: "Soins", price: 10000, duration: 60 },
     ],
     stylists: [
-      { id: "st1", name: "Aminata", specialty: "Coloration", imageUrl: "https://placehold.co/400x400.png", bio: "Coloriste passionnée avec 10 ans d'expérience, spécialisée en balayage et transformations de couleurs vibrantes.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
-      { id: "st2", name: "Ousmane", specialty: "Coupes Homme", imageUrl: "https://placehold.co/400x400.png", bio: "Expert en soins pour hommes modernes et classiques. Coupes de précision et dégradés nets sont ma signature.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
+      { id: "st1", name: "Aminata", specialty: "Coloration", imageUrl: "/assets/images/stylists/aminata.jpg", bio: "Coloriste passionnée avec 10 ans d'expérience, spécialisée en balayage et transformations de couleurs vibrantes.", portfolio: ["/assets/images/stylists/aminata-work-1.jpg", "/assets/images/stylists/aminata-work-2.jpg", "/assets/images/stylists/aminata-work-3.jpg"] },
+      { id: "st2", name: "Ousmane", specialty: "Coupes Homme", imageUrl: "/assets/images/stylists/ousmane.jpg", bio: "Expert en soins pour hommes modernes et classiques. Coupes de précision et dégradés nets sont ma signature.", portfolio: ["/assets/images/stylists/ousmane-work-1.jpg", "/assets/images/stylists/ousmane-work-2.jpg", "/assets/images/stylists/ousmane-work-3.jpg"] },
     ],
   },
   {
@@ -75,9 +75,9 @@ export const salons: Salon[] = [
     imagePrompt: "a chic, urban salon with exposed brick walls, industrial-style lighting, and comfortable styling stations",
     imageUrl: "",
     gallery: [
-      "https://placehold.co/800x600.png",
-      "https://placehold.co/800x600.png",
-      "https://placehold.co/800x600.png",
+      "/assets/images/salons/maitres-style-1.jpg",
+      "/assets/images/salons/maitres-style-2.jpg",
+      "/assets/images/salons/maitres-style-3.jpg",
     ],
     reviews: [
       { id: "r3", author: "Awa Fall", rating: 5, comment: "Les meilleures tresses en ville !" },
@@ -88,8 +88,8 @@ export const salons: Salon[] = [
         { id: "s3", name: "Tresses", category: "Tresses", price: 22000, duration: 260 },
     ],
     stylists: [
-        { id: "st3", name: "Khadija", specialty: "Tresses", imageUrl: "https://placehold.co/400x400.png", bio: "Maîtresse tresseuse au toucher doux. Des nattes collées complexes aux chignons élégants, je donne vie à votre vision.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
-        { id: "st4", name: "Ibrahim", specialty: "Coiffage", imageUrl: "https://placehold.co/400x400.png", bio: "Styliste créatif qui adore créer des looks uniques et tendance pour toutes les occasions.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
+        { id: "st3", name: "Khadija", specialty: "Tresses", imageUrl: "/assets/images/stylists/khadija.jpg", bio: "Maîtresse tresseuse au toucher doux. Des nattes collées complexes aux chignons élégants, je donne vie à votre vision.", portfolio: ["/assets/images/stylists/khadija-work-1.jpg", "/assets/images/stylists/khadija-work-2.jpg", "/assets/images/stylists/khadija-work-3.jpg"] },
+        { id: "st4", name: "Ibrahim", specialty: "Coiffage", imageUrl: "/assets/images/stylists/ibrahim.jpg", bio: "Styliste créatif qui adore créer des looks uniques et tendance pour toutes les occasions.", portfolio: ["/assets/images/stylists/ibrahim-work-1.jpg", "/assets/images/stylists/ibrahim-work-2.jpg", "/assets/images/stylists/ibrahim-work-3.jpg"] },
     ],
   },
   {
@@ -100,9 +100,9 @@ export const salons: Salon[] = [
     imagePrompt: "a classic, old-school barbershop with vintage barber chairs, dark wood paneling, and checkered floors",
     imageUrl: "",
     gallery: [
-      "https://placehold.co/800x600.png",
-      "https://placehold.co/800x600.png",
-      "https://placehold.co/800x600.png",
+      "/assets/images/salons/prestige-barbier-1.jpg",
+      "/assets/images/salons/prestige-barbier-2.jpg",
+      "/assets/images/salons/prestige-barbier-3.jpg",
     ],
     reviews: [
       { id: "r4", author: "Cheikh Bamba", rating: 5, comment: "Dégradé parfait à chaque fois." },
@@ -112,7 +112,7 @@ export const salons: Salon[] = [
         { id: "s6", name: "Taille de Barbe", category: "Barbe", price: 3000, duration: 20 },
     ],
     stylists: [
-        { id: "st5", name: "Moussa", specialty: "Barbier", imageUrl: "https://placehold.co/400x400.png", bio: "Barbier dévoué axé sur les lignes épurées et une finition parfaite. Votre barbe est entre de bonnes mains.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
+        { id: "st5", name: "Moussa", specialty: "Barbier", imageUrl: "/assets/images/stylists/moussa.jpg", bio: "Barbier dévoué axé sur les lignes épurées et une finition parfaite. Votre barbe est entre de bonnes mains.", portfolio: ["/assets/images/stylists/moussa-work-1.jpg", "/assets/images/stylists/moussa-work-2.jpg", "/assets/images/stylists/moussa-work-3.jpg"] },
     ],
   },
   {
@@ -123,9 +123,9 @@ export const salons: Salon[] = [
     imagePrompt: "an elegant and feminine salon with pastel colors, plush velvet chairs, and floral decorations",
     imageUrl: "",
     gallery: [
-      "https://placehold.co/800x600.png",
-      "https://placehold.co/800x600.png",
-      "https://placehold.co/800x600.png",
+      "/assets/images/salons/femme-chic-1.jpg",
+      "/assets/images/salons/femme-chic-2.jpg",
+      "/assets/images/salons/femme-chic-3.jpg",
     ],
     reviews: [
       { id: "r5", author: "Mariama Ba", rating: 4, comment: "Bon service, mais un peu cher." },
@@ -136,8 +136,8 @@ export const salons: Salon[] = [
       { id: "s7", name: "Défrisage", category: "Traitements", price: 12000, duration: 120 },
     ],
     stylists: [
-        { id: "st6", name: "Fatima", specialty: "Coiffage", imageUrl: "https://placehold.co/400x400.png", bio: "Je crois d'abord aux cheveux sains. Créons un style qui n'est pas seulement beau, mais aussi durable.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
-        { id: "st7", name: "Ndeye", specialty: "Traitements Chimiques", imageUrl: "https://placehold.co/400x400.png", bio: "Spécialisée dans les défrisages, les permanentes et les soins pour gérer et embellir tous les types de cheveux.", portfolio: ["https://placehold.co/600x800.png", "https://placehold.co/600x800.png", "https://placehold.co/600x800.png"] },
+        { id: "st6", name: "Fatima", specialty: "Coiffage", imageUrl: "/assets/images/stylists/fatima.jpg", bio: "Je crois d'abord aux cheveux sains. Créons un style qui n'est pas seulement beau, mais aussi durable.", portfolio: ["/assets/images/stylists/fatima-work-1.jpg", "/assets/images/stylists/fatima-work-2.jpg", "/assets/images/stylists/fatima-work-3.jpg"] },
+        { id: "st7", name: "Ndeye", specialty: "Traitements Chimiques", imageUrl: "/assets/images/stylists/ndeye.jpg", bio: "Spécialisée dans les défrisages, les permanentes et les soins pour gérer et embellir tous les types de cheveux.", portfolio: ["/assets/images/stylists/ndeye-work-1.jpg", "/assets/images/stylists/ndeye-work-2.jpg", "/assets/images/stylists/ndeye-work-3.jpg"] },
     ],
   },
 ];
