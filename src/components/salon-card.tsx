@@ -14,11 +14,12 @@ import { Skeleton } from "./ui/skeleton";
 
 interface SalonCardProps {
   salon: Salon;
+  distance?: number;
 }
 
 const IMAGE_CACHE_PREFIX = "salon-image-cache-";
 
-export function SalonCard({ salon }: SalonCardProps) {
+export function SalonCard({ salon, distance }: SalonCardProps) {
   const [imageUrl, setImageUrl] = useState<string | null>(salon.imageUrl);
   const [isLoading, setIsLoading] = useState(!salon.imageUrl);
 
@@ -100,6 +101,9 @@ export function SalonCard({ salon }: SalonCardProps) {
         <div className="flex items-center text-muted-foreground text-sm mt-1">
           <MapPin className="h-4 w-4 mr-1" />
           {salon.location}
+          {distance !== undefined && (
+            <span className="ml-2 font-semibold">({distance.toFixed(1)} km)</span>
+          )}
         </div>
       </CardContent>
       <CardFooter className="p-4 flex justify-between items-center bg-muted/50">

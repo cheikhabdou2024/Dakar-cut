@@ -13,6 +13,19 @@ import { Label } from "@/components/ui/label";
 
 const SALONS_STORAGE_KEY = 'dakar-hair-connect-salons';
 
+// Haversine formula to calculate distance between two points on Earth
+const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+  const R = 6371; // Radius of the Earth in km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; // Distance in km
+};
+
 export default function HomePage() {
   const [salons, setSalons] = useState<Salon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -21,6 +34,7 @@ export default function HomePage() {
   const [filteredSalons, setFilteredSalons] = useState<Salon[]>([]);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [allServices, setAllServices] = useState<string[]>([]);
+  const [userLocation, setUserLocation] = useState<{latitude: number, longitude: number} | null>(null);
 
   useEffect(() => {
     let loadedSalons: Salon[];
@@ -82,11 +96,35 @@ export default function HomePage() {
       });
     }
 
+    if (activeFilter === 'nearMe' && userLocation) {
+      results = [...results].sort((a, b) => {
+        const distA = getDistance(userLocation.latitude, userLocation.longitude, a.latitude, a.longitude);
+        const distB = getDistance(userLocation.latitude, userLocation.longitude, b.latitude, b.longitude);
+        return distA - distB;
+      });
+    }
+
     setFilteredSalons(results);
-  }, [searchQuery, activeFilter, salons, selectedServices]);
+  }, [searchQuery, activeFilter, salons, selectedServices, userLocation]);
   
   const handleFilterClick = (filter: string) => {
-    setActiveFilter(prev => prev === filter ? null : filter);
+    if (filter === 'nearMe') {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+          setUserLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          });
+          setActiveFilter(prev => prev === filter ? null : filter);
+        }, () => {
+          alert('Unable to retrieve your location.');
+        });
+      } else {
+        alert('Geolocation is not supported by your browser.');
+      }
+    } else {
+      setActiveFilter(prev => prev === filter ? null : filter);
+    }
   };
   
   if (isLoading) {
@@ -119,7 +157,7 @@ export default function HomePage() {
           />
         </div>
         <div className="flex flex-wrap items-center gap-4">
-          <Button variant="secondary" disabled>
+          <Button variant={activeFilter === 'nearMe' ? 'default' : 'secondary'} onClick={() => handleFilterClick('nearMe')}>
             <MapPin className="mr-2" />
             Près de moi
           </Button>
@@ -174,7 +212,7 @@ export default function HomePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {filteredSalons.length > 0 ? (
             filteredSalons.map((salon) => (
-              <SalonCard key={salon.id} salon={salon} />
+              <SalonCard key={salon.id} salon={salon} distance={userLocation ? getDistance(userLocation.latitude, userLocation.longitude, salon.latitude, salon.longitude) : undefined} />
             ))
           ) : (
             <p className="col-span-full text-center text-muted-foreground">

@@ -28,7 +28,7 @@ export function Header() {
           <Link href="/home" className="transition-colors hover:text-primary">Trouver un Salon</Link>
           <Link href="/appointments" className="transition-colors hover:text-primary">Mes Rendez-vous</Link>
           <Link href="/dashboard" className="transition-colors hover:text-primary">Pour les Stylistes</Link>
-          <Link href="/style-ai" className="transition-colors hover:text-primary">IA Coiffure</Link>
+          <Link href="/ia-coiffure" className="transition-colors hover:text-primary">IA Coiffure</Link>
           <Link href="/inspiration" className="transition-colors hover:text-primary flex items-center gap-1">
               <Sparkles className="h-4 w-4" />
               Inspiration

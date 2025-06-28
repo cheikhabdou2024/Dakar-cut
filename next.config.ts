@@ -11,7 +11,16 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       // Add any remote image sources here if needed in the future
+      {
+        protocol: 'https',
+        hostname: '**.googleusercontent.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
+  },
+  env: {
+    GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
   },
 };
 

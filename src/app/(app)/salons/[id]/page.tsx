@@ -14,6 +14,9 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star, MapPin, Clock, Scissors, Loader2 } from "lucide-react";
 import { BookingDialog } from '@/components/booking-dialog';
+import dynamic from 'next/dynamic';
+
+const Map = dynamic(() => import('@/components/ui/map'), { ssr: false });
 
 const SALONS_STORAGE_KEY = 'dakar-hair-connect-salons';
 
@@ -23,6 +26,7 @@ export default function SalonPage() {
 
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [salon, setSalon] = useState<Salon | null | undefined>(undefined);
+  const [showMap, setShowMap] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -50,6 +54,11 @@ export default function SalonPage() {
   if (!salon) {
     notFound();
   }
+
+  const handleGetDirections = () => {
+    const url = `https://www.google.com/maps/dir/?api=1&destination=${salon.latitude},${salon.longitude}`;
+    window.open(url, "_blank");
+  };
 
   const averageRating = salon.reviews && salon.reviews.length > 0 
     ? (salon.reviews.reduce((acc, review) => acc + review.rating, 0) / salon.reviews.length).toFixed(1)
@@ -86,6 +95,20 @@ export default function SalonPage() {
             <CarouselPrevious />
             <CarouselNext />
           </Carousel>
+
+          <div className="flex gap-4 mb-6">
+            <Button onClick={() => setShowMap(!showMap)}>
+              {showMap ? "Hide Map" : "View on Map"}
+            </Button>
+            <Button onClick={handleGetDirections}>Get Directions</Button>
+          </div>
+          {showMap && (
+            <Map
+              center={[salon.latitude, salon.longitude]}
+              markerPosition={[salon.latitude, salon.longitude]}
+              markerPopup={salon.name}
+            />
+          )}
 
           <Tabs defaultValue="services" className="w-full">
             <TabsList>

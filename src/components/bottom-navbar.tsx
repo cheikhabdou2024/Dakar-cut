@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { href: "/home", label: "Salons", icon: Home },
   { href: "/appointments", label: "Réservations", icon: Calendar },
-  { href: "/style-ai", label: "IA Coiffure", icon: Wand2 },
+  { href: "/ia-coiffure", label: "IA Coiffure", icon: Wand2 },
   { href: "/inspiration", label: "Inspiration", icon: Sparkles },
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
 ];

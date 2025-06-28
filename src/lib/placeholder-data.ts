@@ -38,109 +38,208 @@ export type Salon = {
   stylists: Stylist[];
 };
 
-export const salons: Salon[] = [
+export const salons = [
   {
     id: "1",
     name: "Élégance Coiffure",
-    location: "Almadies, Dakar",
-    status: "Ouvert",
-    imagePrompt: "a bright, luxurious hair salon interior with marble floors, gold accents, and large mirrors",
-    imageUrl: "",
+    address: "123 Rue de la Beauté, Dakar",
+    phone: "+221 33 820 00 00",
+    hours: "9:00 AM - 7:00 PM",
+    rating: 4.5,
+    reviews: 120,
+    image: "/assets/images/salons/elegance-coiffure-1.jpg",
     gallery: [
-      "/assets/images/salons/elegance-coiffure-1.jpg",
       "/assets/images/salons/elegance-coiffure-2.jpg",
       "/assets/images/salons/elegance-coiffure-3.jpg",
+      "/assets/images/salons/default-salon.jpg",
     ],
-    reviews: [
-      { id: "r1", author: "Fatou Diop", rating: 5, comment: "Service incroyable ! Mes cheveux n'ont jamais été aussi beaux." },
-      { id: "r2", author: "Moussa Gueye", rating: 4, comment: "Super endroit, personnel très professionnel." },
-    ],
-    services: [
-      { id: "s1", name: "Coupe Homme", category: "Coupes", price: 5000, duration: 30 },
-      { id: "s2", name: "Coupe & Coiffage Femme", category: "Coupes", price: 15000, duration: 90 },
-      { id: "s3", name: "Tresses", category: "Tresses", price: 20000, duration: 240 },
-      { id: "s5", name: "Coloration Tête Complète", category: "Coloration", price: 25000, duration: 180 },
-      { id: "s4", name: "Soin Revitalisant Profond", category: "Soins", price: 10000, duration: 60 },
-    ],
+    description:
+      "A luxurious salon offering a wide range of hair and beauty services. Our experienced stylists are dedicated to making you look and feel your best.",
+    services: ["Haircuts", "Coloring", "Styling", "Manicures", "Pedicures"],
     stylists: [
-      { id: "st1", name: "Aminata", specialty: "Coloration", imageUrl: "/assets/images/stylists/aminata.jpg", bio: "Coloriste passionnée avec 10 ans d'expérience, spécialisée en balayage et transformations de couleurs vibrantes.", portfolio: ["/assets/images/stylists/aminata-work-1.jpg", "/assets/images/stylists/aminata-work-2.jpg", "/assets/images/stylists/aminata-work-3.jpg"] },
-      { id: "st2", name: "Ousmane", specialty: "Coupes Homme", imageUrl: "/assets/images/stylists/ousmane.jpg", bio: "Expert en soins pour hommes modernes et classiques. Coupes de précision et dégradés nets sont ma signature.", portfolio: ["/assets/images/stylists/ousmane-work-1.jpg", "/assets/images/stylists/ousmane-work-2.jpg", "/assets/images/stylists/ousmane-work-3.jpg"] },
+      {
+        id: "101",
+        name: "Aminata Diop",
+        rating: 4.8,
+        specialties: ["Balayage", "Bridal Hair"],
+        image: "/assets/images/stylists/aminata.jpg",
+        availability: "available",
+      },
+      {
+        id: "102",
+        name: "Ousmane Sow",
+        rating: 4.6,
+        specialties: ["Fades", "Beard Trims"],
+        image: "/assets/images/stylists/ousmane.jpg",
+        availability: "unavailable",
+      },
     ],
+    reviewsData: [
+      {
+        id: "r1",
+        name: "Awa Gueye",
+        rating: 5,
+        comment: "Amazing service! Aminata is a true artist.",
+        avatar: "/assets/images/stylists/default-stylist.jpg",
+      },
+      {
+        id: "r2",
+        name: "Moussa Fall",
+        rating: 4,
+        comment: "Great haircut from Ousmane. Very professional.",
+        avatar: "/assets/images/stylists/default-stylist.jpg",
+      },
+    ],
+    latitude: 14.6927,
+    longitude: -17.4469,
   },
   {
     id: "2",
-    name: "Maîtres du Style de Dakar",
-    location: "Plateau, Dakar",
-    status: "Ouvert",
-    imagePrompt: "a chic, urban salon with exposed brick walls, industrial-style lighting, and comfortable styling stations",
-    imageUrl: "",
+    name: "Prestige Barbier",
+    address: "45 Avenue des Baobabs, Dakar",
+    phone: "+221 33 821 11 11",
+    hours: "8:00 AM - 8:00 PM",
+    rating: 4.8,
+    reviews: 95,
+    image: "/assets/images/salons/prestige-barbier-1.jpg",
     gallery: [
-      "/assets/images/salons/maitres-style-1.jpg",
-      "/assets/images/salons/maitres-style-2.jpg",
-      "/assets/images/salons/maitres-style-3.jpg",
+      "/assets/images/salons/prestige-barbier-2.jpg",
+      "/assets/images/salons/prestige-barbier-3.jpg",
+      "/assets/images/salons/default-salon1.jpg",
     ],
-    reviews: [
-      { id: "r3", author: "Awa Fall", rating: 5, comment: "Les meilleures tresses en ville !" },
-    ],
-    services: [
-        { id: "s4", name: "Soin Revitalisant Profond", category: "Soins", price: 10000, duration: 60 },
-        { id: "s5", name: "Coloration Tête Complète", category: "Coloration", price: 25000, duration: 180 },
-        { id: "s3", name: "Tresses", category: "Tresses", price: 22000, duration: 260 },
-    ],
+    description:
+      "The ultimate grooming experience for the modern man. We specialize in classic and contemporary haircuts, shaves, and beard care.",
+    services: ["Haircuts", "Shaves", "Beard Trimming", "Facials"],
     stylists: [
-        { id: "st3", name: "Khadija", specialty: "Tresses", imageUrl: "/assets/images/stylists/khadija.jpg", bio: "Maîtresse tresseuse au toucher doux. Des nattes collées complexes aux chignons élégants, je donne vie à votre vision.", portfolio: ["/assets/images/stylists/khadija-work-1.jpg", "/assets/images/stylists/khadija-work-2.jpg", "/assets/images/stylists/khadija-work-3.jpg"] },
-        { id: "st4", name: "Ibrahim", specialty: "Coiffage", imageUrl: "/assets/images/stylists/ibrahim.jpg", bio: "Styliste créatif qui adore créer des looks uniques et tendance pour toutes les occasions.", portfolio: ["/assets/images/stylists/ibrahim-work-1.jpg", "/assets/images/stylists/ibrahim-work-2.jpg", "/assets/images/stylists/ibrahim-work-3.jpg"] },
+      {
+        id: "201",
+        name: "Jean-Pierre Faye",
+        rating: 4.9,
+        specialties: ["Hot Towel Shaves", "Skin Fades"],
+        image: "/assets/images/stylists/default-stylist.jpg",
+        availability: "available",
+      },
+      {
+        id: "202",
+        name: "Serigne Mbaye",
+        rating: 4.7,
+        specialties: ["Afro Styling", "Hair Tattoos"],
+        image: "/assets/images/stylists/default-stylist.jpg",
+        availability: "available",
+      },
     ],
+    reviewsData: [
+      {
+        id: "r3",
+        name: "Alioune Diouf",
+        rating: 5,
+        comment: "Best barber shop in Dakar, hands down.",
+        avatar: "/assets/images/stylists/default-stylist.jpg",
+      },
+    ],
+    latitude: 14.7167,
+    longitude: -17.4677,
   },
   {
     id: "3",
-    name: "Le Prestige Barbier",
-    location: "Mermoz, Dakar",
-    status: "Fermé",
-    imagePrompt: "a classic, old-school barbershop with vintage barber chairs, dark wood paneling, and checkered floors",
-    imageUrl: "",
+    name: "Femme Chic",
+    address: "78 Boulevard de la République, Dakar",
+    phone: "+221 33 822 22 22",
+    hours: "10:00 AM - 6:00 PM",
+    rating: 4.3,
+    reviews: 78,
+    image: "/assets/images/salons/femme-chic-1.jpg",
     gallery: [
-      "/assets/images/salons/prestige-barbier-1.jpg",
-      "/assets/images/salons/prestige-barbier-2.jpg",
-      "/assets/images/salons/prestige-barbier-3.jpg",
+      "/assets/images/salons/femme-chic-2.jpg",
+      "/assets/images/salons/femme-chic-3.jpg",
+      "/assets/images/salons/default-salon.jpg",
     ],
-    reviews: [
-      { id: "r4", author: "Cheikh Bamba", rating: 5, comment: "Dégradé parfait à chaque fois." },
-    ],
-    services: [
-        { id: "s1", name: "Coupe Homme", category: "Coupes", price: 6000, duration: 45 },
-        { id: "s6", name: "Taille de Barbe", category: "Barbe", price: 3000, duration: 20 },
-    ],
+    description:
+      "Your one-stop shop for all things beauty. We offer a wide range of services, from hair styling to makeup and waxing.",
+    services: ["Haircuts", "Coloring", "Makeup", "Waxing", "Nails"],
     stylists: [
-        { id: "st5", name: "Moussa", specialty: "Barbier", imageUrl: "/assets/images/stylists/moussa.jpg", bio: "Barbier dévoué axé sur les lignes épurées et une finition parfaite. Votre barbe est entre de bonnes mains.", portfolio: ["/assets/images/stylists/moussa-work-1.jpg", "/assets/images/stylists/moussa-work-2.jpg", "/assets/images/stylists/moussa-work-3.jpg"] },
+      {
+        id: "301",
+        name: "Fatou Ndiaye",
+        rating: 4.5,
+        specialties: ["Evening Makeup", "Gel Nails"],
+        image: "/assets/images/stylists/default-stylist.jpg",
+        availability: "unavailable",
+      },
     ],
+    reviewsData: [
+      {
+        id: "r4",
+        name: "Mariama Ba",
+        rating: 4,
+        comment: "I love my new hair color! Thank you, Fatou.",
+        avatar: "/assets/images/stylists/default-stylist.jpg",
+      },
+    ],
+    latitude: 14.6627,
+    longitude: -17.4369,
   },
   {
     id: "4",
-    name: "Femme Chic",
-    location: "Fann, Dakar",
-    status: "Ouvert",
-    imagePrompt: "an elegant and feminine salon with pastel colors, plush velvet chairs, and floral decorations",
-    imageUrl: "",
+    name: "Les Maîtres du Style",
+    address: "10 Rue de la Mode, Dakar",
+    phone: "+221 33 823 33 33",
+    hours: "9:30 AM - 7:30 PM",
+    rating: 4.6,
+    reviews: 150,
+    image: "/assets/images/salons/maitres-style-1.jpg",
     gallery: [
-      "/assets/images/salons/femme-chic-1.jpg",
-      "/assets/images/salons/femme-chic-2.jpg",
-      "/assets/images/salons/femme-chic-3.jpg",
+      "/assets/images/salons/maitres-style-2.jpg",
+      "/assets/images/salons/maitres-style-3.jpg",
+      "/assets/images/salons/default-salon1.jpg",
     ],
-    reviews: [
-      { id: "r5", author: "Mariama Ba", rating: 4, comment: "Bon service, mais un peu cher." },
-      { id: "r6", author: "Sophie Gomis", rating: 5, comment: "J'adore ma nouvelle coiffure ! Merci !" },
-    ],
-    services: [
-      { id: "s2", name: "Coupe & Coiffage Femme", category: "Coupes", price: 18000, duration: 90 },
-      { id: "s7", name: "Défrisage", category: "Traitements", price: 12000, duration: 120 },
-    ],
+    description:
+      "A team of master stylists dedicated to creating the perfect look for you. We stay up-to-date on the latest trends and techniques.",
+    services: ["Creative Cuts", "Vivid Colors", "Hair Extensions"],
     stylists: [
-        { id: "st6", name: "Fatima", specialty: "Coiffage", imageUrl: "/assets/images/stylists/fatima.jpg", bio: "Je crois d'abord aux cheveux sains. Créons un style qui n'est pas seulement beau, mais aussi durable.", portfolio: ["/assets/images/stylists/fatima-work-1.jpg", "/assets/images/stylists/fatima-work-2.jpg", "/assets/images/stylists/fatima-work-3.jpg"] },
-        { id: "st7", name: "Ndeye", specialty: "Traitements Chimiques", imageUrl: "/assets/images/stylists/ndeye.jpg", bio: "Spécialisée dans les défrisages, les permanentes et les soins pour gérer et embellir tous les types de cheveux.", portfolio: ["/assets/images/stylists/ndeye-work-1.jpg", "/assets/images/stylists/ndeye-work-2.jpg", "/assets/images/stylists/ndeye-work-3.jpg"] },
+      {
+        id: "401",
+        name: "Isabelle Sagna",
+        rating: 4.8,
+        specialties: ["Rainbow Hair", "Keratin Treatments"],
+        image: "/assets/images/stylists/default-stylist.jpg",
+        availability: "available",
+      },
+      {
+        id: "402",
+        name: "Thomas Mendy",
+        rating: 4.5,
+        specialties: ["Geometric Cuts", "Men's Coloring"],
+        image: "/assets/images/stylists/default-stylist.jpg",
+        availability: "available",
+      },
     ],
+    reviewsData: [
+      {
+        id: "r5",
+        name: "Sophie Gomis",
+        rating: 5,
+        comment:
+          "Isabelle is a magician! I've never been happier with my hair.",
+        avatar: "/assets/images/stylists/default-stylist.jpg",
+      },
+    ],
+    latitude: 14.6827,
+    longitude: -17.4569,
   },
 ];
+
+export const stylists = salons.flatMap((s) => s.stylists);
+
+export const reviews = salons.flatMap((s) => s.reviewsData);
+
+export const locations = salons.map((salon) => ({
+  id: salon.id,
+  name: salon.name,
+  latitude: salon.latitude,
+  longitude: salon.longitude,
+}));
+
 
 export type Appointment = {
     id: string;

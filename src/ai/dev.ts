@@ -5,3 +5,4 @@ import './flows/hairstyle-inspiration-flow';
 import './flows/product-recommender-flow';
 import './flows/hairstyle-examples-flow';
 import './flows/salon-image-flow';
+import './flows/hairstyle-virtual-try-on-flow';
